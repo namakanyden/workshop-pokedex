@@ -1,0 +1,8 @@
+pydantic
+ipython
+fastapi
+uvicorn
+litecli
+jinja2
+sqlmodel
+httpie
