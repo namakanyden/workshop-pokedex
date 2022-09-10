@@ -4,21 +4,27 @@ alebo ako si vytvoriť [Pokédex](https://www.pokemon.com/us/pokedex/) v jazyku 
 
 ![Who's that Pokémon](https://cdn.vox-cdn.com/uploads/chorus_image/image/53254027/who_pokemon.0.jpg)
 
+Pokédex je pomôcka každého správneho trénera Pokémonov. Ak si trénerom Pokémonov, už určite svoj Pokédex máš. To ale nevadí, pretože na tomto workshope si vytvoríš svoj vlastný Pokédex, ktorý môže vyzerať a fungovať ako len chceš.
+
+Pokédex vytvoríme pomocou mladého a stále [populárnejšieho](https://survey.stackoverflow.co/2022/#most-loved-dreaded-and-wanted-webframe-love-dread) mikro webového rámca [FastAPI](https://fastapi.tiangolo.com). Keďže je primárne určený na tvorbu REST API, začneme endpoint-mi na získanie zoznamu všetkých Pokémonov, ale rovnako vytvoríme endpoint na získanie informácií o konkrétnom Pokémonovi na základe jeho čísla v Pokédexe. Ukážeme si však aj to, ako pomocou rámca FastAPI vytvárať dynamické HTML stránky pomocou šablónovacieho systému [Jinja](https://jinja.palletsprojects.com/). A samozrejme - dáta o Pokémonoch sú uložené v SQLite databáze a budeme k nim pristupovať pomocou balíka [SQLModel](https://sqlmodel.tiangolo.com).
+
+**Odporúčaný čas:** 120 minút
+
 **Upozornenie:** Keďže je tento workshop pomerne krátky, nebudeme v ňom vedieť aplikovať tie najlepšie prístupy pre tvorbu aplikácií pomocou rámca FastAPI.
 
 ## Ciele
 
 1. Naučiť sa základy práce s webovým rámcom [FastAPI](https://fastapi.tiangolo.com/).
-2. Vytvoriť jednoduchý model pomocou rámca [SQLModel](https://sqlmodel.tiangolo.com/).
-3. Vytvárať dopyty pomocou ORM rámca [SQLModel](https://sqlmodel.tiangolo.com/).
-4. Vytvoriť jednoduché REST API.
-5. Vytvoriť jednoduchý HTML pohľad pomocou šablónovacieho systému [Jinja](https://jinja.palletsprojects.com/).
+2. Naučiť sa vytvárať jednoduché modely pomocou rámca [SQLModel](https://sqlmodel.tiangolo.com/).
+3. Naučiť sa vytvárať dopyty pomocou ORM rámca [SQLModel](https://sqlmodel.tiangolo.com/).
+4. Naučiť sa vytvárať jednoduché REST API.
+5. Naučiť sa vytvárať jednoduché HTML pohľady pomocou šablónovacieho systému [Jinja](https://jinja.palletsprojects.com/).
 
 ## Krok 1. Čo budeme potrebovať?
 
 Ešte predtým, ako sa pustíme do tvorby aplikácie, si pripravíme prostredie pre prácu. Konkrétne budeme potrebovať:
 
-* editor kódu [Thonny](https://thonny.org) (alebo ľubovoľný iný editor kódu jazyka Python)
+* editor kódu jazyka Python (je možné použiť aj  [Thonny](https://thonny.org), ale odporúčam IDE, ktoré zvláda prácu s viacerými súbormi a nemá problém s automatickým dopĺňaním kódu)
 * stiahnutú kostru projektu z priečinku `app-template/`
 * nainštalované balíčky zo súboru `requirements.txt`
 
@@ -26,7 +32,7 @@ Ešte predtým, ako sa pustíme do tvorby aplikácie, si pripravíme prostredie 
 
 [![Webový rámec FastAPI](https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png)](https://fastapi.tiangolo.com/)
 
-**Úloha 2.1** Otvorte v editore Thonny súbor `main.py`
+**Úloha 2.1** Otvorte v editore kódu súbor `main.py`
 
 ```python
 from fastapi import FastAPI
@@ -56,9 +62,11 @@ Pri spúšťaní sme zabezpečili, že:
 * aplikácia bude akceptovať spojenia z akejkoľvek IP adresy (parameter `host=0.0.0.0`); parameter `host` nie je povinný a ak by sme ho neuviedli, bude možné k aplikácii pristupovať len z IP adresy `127.0.0.1`
 * v prípade, že urobíme zmenu v ktoromkoľvek súbore, aplikácia sa sama aktualizuje; parameter `reload` nie je povinný a ak by sme ho neuviedli, bude mať nastavenú hodnotu `False`
 
+**Poznámka:** Ak budete pre vývoj používať ľahký editor kódu [Thonny](https://thonny.org), tak **program nevypínajte stlačením červeného tlačidla**! Program totiž zostane bežať na pozadí a pri pokuse o jeho opätovné spustenie dostanete chybovú hlášku o tom, že port je už obsadený. Rýchlym riešením v rámci workshop-u je číslo portu zmeniť na iný.
+
 **Úloha 2.2** Spustite a overte spustenú aplikáciu.
 
-Po spustení bude aplikácia dostupná na adrese [http://0.0.0.0:8080](http://0.0.0.0:8080). Ak otvoríme prehliadač na tejto adrese, uvidíme v ňom text:
+Po spustení bude aplikácia dostupná na adrese [http://0.0.0.0:8080](http://0.0.0.0:8080), resp. na adrese [http://localhost:8080](http://localhost:8080). Ak otvoríme prehliadač na tejto adrese, uvidíme v ňom text:
 
 ```
 Hello world!
@@ -67,7 +75,7 @@ Hello world!
 **Lektor:** Viac nám však povie pohľad na hlavičku HTTP odpovede. Tú si vieme zobraziť napríklad nástrojom [`httpie`](https://httpie.io/) z príkazového riadku spustením príkazu:
 
 ```bash
-$ http http://0.0.0.0:8080
+$ http http://localhost:8080
 ```
 
 Výsledkom bude HTTP hlavička odpovede spolu s jej telom:
@@ -82,7 +90,7 @@ server: uvicorn
 "Hello world!"
 ```
 
-Ako je možné vidieť, typ odpovede (hodnota položky `content-type`) je v tomto prípade JSON dokument (hodnota `application/json`) a nie HTML dokument, ako je tomu napríklad v prípade mikro webového rámca [Flask](https://flask.palletsprojects.com/) alebo [Django](https://www.djangoproject.com/). To je dané tým, že rámec FastAPI je primárne určený na tvorbu HTTP REST API.
+Ako je možné vidieť, typ odpovede (kľúč `content-type` v hlavičke odpovede) je v tomto prípade JSON dokument (hodnota `application/json`) a nie HTML dokument, ako je tomu napríklad v prípade mikro webového rámca [Flask](https://flask.palletsprojects.com/) alebo [Django](https://www.djangoproject.com/). To je dané tým, že rámec FastAPI je primárne určený na tvorbu HTTP REST API.
 
 A práve vytvorením jednoduchého HTTP REST API budeme pokračovať.
 
@@ -142,7 +150,6 @@ class Pokemon(SQLModel, table=True):
     classification: str
     type1: str
     type2: str
-
 ```
 
 Pri čítaní a zapisovaní do databázy bude automaticky pracovať s tabuľkou s názvom `pokemon`. V prípade, že by sme potrebovali inú tabuľku, môžeme do modelu pridať atribút `__tablename__` s názvom požadovanej tabuľky, napr.:
