@@ -62,11 +62,26 @@ Pri spúšťaní sme zabezpečili, že:
 * aplikácia bude akceptovať spojenia z akejkoľvek IP adresy (parameter `host=0.0.0.0`); parameter `host` nie je povinný a ak by sme ho neuviedli, bude možné k aplikácii pristupovať len z IP adresy `127.0.0.1`
 * v prípade, že urobíme zmenu v ktoromkoľvek súbore, aplikácia sa sama aktualizuje; parameter `reload` nie je povinný a ak by sme ho neuviedli, bude mať nastavenú hodnotu `False`
 
-**Poznámka:** Ak budete pre vývoj používať ľahký editor kódu [Thonny](https://thonny.org), tak **program nevypínajte stlačením červeného tlačidla**! Program totiž zostane bežať na pozadí a pri pokuse o jeho opätovné spustenie dostanete chybovú hlášku o tom, že port je už obsadený. Rýchlym riešením v rámci workshop-u je číslo portu zmeniť na iný.
+**Poznámka:** Ak budete pre vývoj používať ľahký editor kódu [Thonny](https://thonny.org), tak **program nevypínajte stlačením červeného tlačidla**! Program totiž zostane bežať na pozadí a pri pokuse o jeho opätovné spustenie dostanete chybovú hlášku o tom, že port je už obsadený. To isté sa stane aj vtedy, ak omylom stlačíte tlačidlo spustiť, keď je program už spustený. Rýchlym riešením v rámci workshop-u je číslo portu zmeniť na iný.
+
+**Poznámka pre inštruktora:** Pretože čas je najväčší nepriateľ tohto workshopu a ak nepoužívate niektoré z veľkých prostredí, do modulu `main.py` môžete vložiť všetky potrebné importy pre celú aplikáciu. Toto vám ušetrí čas a nebudete musieť zmätočne behať hore a dolu v kóde vždy, keď začnete používať novú funkciu. Miesto toho môžete akurát upozorniť, z ktorého modulu bola importovaná. Ak však budete pre vývoj používať profesionálne vývojové prostredie, ako napr. [VS Code](https://code.visualstudio.com) alebo [PyCharm](https://www.jetbrains.com/pycharm/), nie je potrebné vymenovať všetky importy dopredu - tieto prostredia budú v pravý čas vedieť správny modul importovať samé.
+
+Zoznam všetkých potrebných importov sa nachádza v tomto fragmente:
+
+```python
+from typing import Union
+
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+import uvicorn
+from sqlmodel import create_engine, select, Session, or_
+```
 
 **Úloha 2.2** Spustite a overte spustenú aplikáciu.
 
-Po spustení bude aplikácia dostupná na adrese [http://0.0.0.0:8080](http://0.0.0.0:8080), resp. na adrese [http://localhost:8080](http://localhost:8080). Ak otvoríme prehliadač na tejto adrese, uvidíme v ňom text:
+Po spustení bude aplikácia dostupná na adrese [http://0.0.0.0:8080](http://0.0.0.0:8080), resp. na adrese [http://localhost:8080](http://localhost:8080), ktorú budeme používať aj my. Ak otvoríme prehliadač na tejto adrese, uvidíme v ňom text:
 
 ```
 Hello world!
@@ -172,10 +187,10 @@ def get_pokemon_list():
 
 **Úloha 4.2** Overte vytvorený endpoint.
 
-Program aplikácie nie je potrebné zastavovať a znovu spúšťať. Stačí len spustiť HTTP klienta na adrese [`http://0.0.0.0:8080/api/pokemons`](http://0.0.0.0:8080/api/pokemons):
+Program aplikácie nie je potrebné zastavovať a znovu spúšťať. Stačí len spustiť HTTP klienta na adrese [`http://localhost:8080/api/pokemons`](http://localhost:8080/api/pokemons):
 
 ```bash
-$ http http://0.0.0.0:8080/api/pokemons
+$ http http://localhost:8080/api/pokemons
 ```
 
 Výsledkom bude prázdny zoznam.
@@ -275,13 +290,13 @@ def get_pokemon_detail(pokedex_number: int):
 Ak vytvoríme požiadavku s korektnou cestou, v odpovedi dostaneme prázdny JSON dokument. Napríklad:
 
 ```bash
-$ http http://0.0.0.0:8080/api/pokemons/1
+$ http http://localhost:8080/api/pokemons/1
 ```
 
 Ak však miesto celočíselného identifikátora použijeme iný údajový typ, dostaneme pekné chybové hlásenie. Ak sa napríklad miesto číselného identifikátora budeme pýtať na reťazec `pikatchu`:
 
 ```bash
-$ http http://0.0.0.0:8080/api/pokemons/pikatchu
+$ http http://localhost:8080/api/pokemons/pikatchu
 ```
 Výsledkom bude chyba:
 
@@ -339,7 +354,7 @@ def get_pokemon_detail(pokedex_number: int):
 Ak napríklad požiadate o detaily Pokémona s identifikačným číslom v Pokédexe _42_:
 
 ```bash
-$ http http://0.0.0.0:8080/api/pokemons/42
+$ http http://localhost:8080/api/pokemons/42
 ```
 
 dostaneme v odpovedi objekt s informáciami o Pokémonovi s menom _Golbat_:
@@ -399,8 +414,8 @@ def get_pokemon_detail(pokedex_number: int):
 
 Pre vytvorené REST API rámec FastAPI automaticky generuje dokumentáciu v dvoch formátoch:
 
-1. [Redoc](https://redocly.com/redoc/) - dostupný na adrese [http://0.0.0.0:8080/redoc](http://0.0.0.0:8080/redoc)
-2. [OpenAPI/Swagger](https://swagger.io/) - dostupný na adrese [http://0.0.0.0:8080/docs](http://0.0.0.0:8080/docs)
+1. [Redoc](https://redocly.com/redoc/) - dostupný na adrese [http://localhost:8080/redoc](http://localhost:8080/redoc)
+2. [OpenAPI/Swagger](https://swagger.io/) - dostupný na adrese [http://localhost:8080/docs](http://localhost:8080/docs)
 
 Pre viac možností, ako je napríklad dokumentácia jednotlivých endpointov, sa pozrite na oficiálnu dokumntáciu rámca FastAPI.
 
@@ -478,7 +493,7 @@ def hello(request: Request):
 
 **Úloha 7.4** Otestujte aktualizovaný pohľad.
 
-Ak otvoríte adresu [http://0.0.0.0:8080/](http://0.0.0.0:8080/) vo webovom prehliadači, zobrazí sa obsah Jinja šablóny pre domovskú, resp. hlavnú stránku.
+Ak otvoríte adresu [http://localhost:8080/](http://localhost:8080/) vo webovom prehliadači, zobrazí sa obsah Jinja šablóny pre domovskú, resp. hlavnú stránku.
 
 ## Krok 8. Pokédex ako HTML stránka
 
@@ -504,7 +519,7 @@ def view_list_of_pokemons(request: Request):
 
 **Úloha 8.2** Overte vytvorenú funkciu.
 
-Ak otvoríte prehliadač na adrese [http://0.0.0.0:8080/pokedex](http://0.0.0.0:8080/pokedex), zobrazí sa vám _50_ prvých Pokémonov z Pokédexu.
+Ak otvoríte prehliadač na adrese [http://localhost:8080/pokedex](http://localhost:8080/pokedex), zobrazí sa vám _50_ prvých Pokémonov z Pokédexu.
 
 ![Pokémoni v Pokédexe](resources/images/pokedex.jpg)
 
@@ -538,7 +553,7 @@ def view_detail_of_pokemon(request: Request, pokedex_number: int):
 
 **Úloha 9.2** Overte vytvorenú funkciu.
 
-Ak otvoríte prehliadač na adrese [http://0.0.0.0:8080/pokedex/25](http://0.0.0.0:8080/pokedex/25), zobrazia sa vám informácie o Pokémonovi _Pikatchu_.
+Ak otvoríte prehliadač na adrese [http://localhost:8080/pokedex/25](http://localhost:8080/pokedex/25), zobrazia sa vám informácie o Pokémonovi _Pikatchu_.
 
 ## Krok 10. Vyhľadávač Pokémonov
 
@@ -567,13 +582,11 @@ def view_list_of_pokemons(request: Request, q: Union[str, None] = None):
         return templates.TemplateResponse('pokemon-list.tpl.html', context)
 ```
 
-
-
 ## Ďalšie zdroje
 
 * [Pokédex](https://www.pokemon.com/us/pokedex/) - online pomôcka každého správneho lovca Pokémonov
 * [FastAPI](https://fastapi.tiangolo.com/) - mikro webový rámec jazyka Python
-* [SQLModel](https://sqlmodel.tiangolo.com/) - 
+* [SQLModel](https://sqlmodel.tiangolo.com/) - knižnica pre interakciu s SQL databázami s objektami v jazyku Python
 * [Jinja](https://jinja.palletsprojects.com) - šablónovací systém
 * [Build a URL Shortener With FastAPI and Python](https://realpython.com/build-a-python-url-shortener-with-fastapi/)
 * [Primer on Jinja Templating](https://realpython.com/primer-on-jinja-templating/)
