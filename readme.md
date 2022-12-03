@@ -114,26 +114,26 @@ A práve vytvorením jednoduchého HTTP REST API budeme pokračovať.
 
 ## Krok 3. Modelujeme Pokémona
 
-Naša aplikácia bude pracovať s perzistentnými údajmi. Tie sa nachádzajú uložené v súbore `pokedex.lite.sqlite`. Databáza obsahuje všetkých _801_ aktuálne známych Pokémonov. Zdrojom dát je dataset zverejnený na serveri [Kaggle](https://www.kaggle.com/datasets/rounakbanik/pokemon). Na komunikáciu s databázou SQLite budeme používať rámec [SQLModel](https://sqlmodel.tiangolo.com/).
+Naša aplikácia bude pracovať s perzistentnými údajmi. Tie sa nachádzajú uložené v súbore `pokedex.sqlite`. Databáza obsahuje všetkých _801_ aktuálne známych Pokémonov. Zdrojom dát je dataset zverejnený na serveri [Kaggle](https://www.kaggle.com/datasets/rounakbanik/pokemon). Na komunikáciu s databázou SQLite budeme používať rámec [SQLModel](https://sqlmodel.tiangolo.com/).
 
 [![SQLModel Logo](https://sqlmodel.tiangolo.com/img/logo-margin/logo-margin-vector.svg)](https://sqlmodel.tiangolo.com/)
 
 **Lektor:** Bližšie sa na uložených Pokémonov môžeme pozrieť pomocou SQLite klienta [`litecli`](https://litecli.com/). Databázu otvoríme príkazom:
 
 ```bash
-$ litecli pokedex.lite.sqlite
+$ litecli pokedex.sqlite
 ```
 
 V databáze sa nachádza len jedna tabuľka. To si môžeme overiť príkazom:
 
 ```bash
-pokedex.lite.sqlite> .tables
+pokedex.sqlite> .tables
 ```
 
 Schému tabuľky si zobrazíme príkazom:
 
 ```bash
-pokedex.lite.sqlite> .schema pokemon
+pokedex.sqlite> .schema pokemon
 ```
 
 **Úloha 3.1** V koreňovom priečinku aplikácie vytvorte súbor `models.py`.
@@ -192,7 +192,7 @@ Do súboru `main.py` Vložíme nasledovný fragment kódu:
 from sqlmodel import create_engine
 
 # db engine
-engine = create_engine('sqlite:///pokedex.lite.sqlite')
+engine = create_engine('sqlite:///pokedex.sqlite')
 ```
 
 
