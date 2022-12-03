@@ -5,4 +5,5 @@ uvicorn
 litecli
 jinja2
 sqlmodel
-httpie
+sqladmin
+# httpie
