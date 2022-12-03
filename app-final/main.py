@@ -49,7 +49,11 @@ def view_list_of_pokemons(request: Request, q: str | None = None):
         if q is None:
             statement = select(Pokemon).limit(40)
         else:
-            statement = select(Pokemon).where(or_(Pokemon.name.ilike(f'%{q}%'), Pokemon.id == q)).limit(40)
+            statement = (
+                select(Pokemon)
+                .where(or_(Pokemon.name.ilike(f'%{q}%'), Pokemon.id == q))
+                .limit(40)
+            )
         pokemons = session.exec(statement).all()
 
         context = {
