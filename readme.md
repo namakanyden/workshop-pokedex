@@ -71,14 +71,13 @@ Pri spúšťaní sme zabezpečili, že:
 Zoznam všetkých potrebných systémových importov sa nachádza v tomto fragmente:
 
 ```python
-from typing import Union
-
+import uvicorn
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-import uvicorn
 from sqlmodel import create_engine, select, Session, or_
+from sqladmin import Admin
 ```
 
 **Úloha 2.2** Spustite a overte spustenú aplikáciu.
@@ -208,7 +207,7 @@ admin = Admin(app, engine)
 ```
 
 
-**Úloha 4.3** Overte funkčnosť admin rozhrania otvorením adresy [http://localhost:8080/admin/] v prehliadači.
+**Úloha 4.3** Overte funkčnosť admin rozhrania otvorením adresy [http://localhost:8080/admin/](http://localhost:8080/admin/) v prehliadači.
 
 Pokiaľ je všetko v poriadku, v prehliadači sa vám zobrazí prázdna obrazovka admin rozhrania.
 

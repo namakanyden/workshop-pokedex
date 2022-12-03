@@ -1,10 +1,10 @@
+import uvicorn
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from sqladmin import Admin
-import uvicorn
 from sqlmodel import create_engine, select, Session, or_
+from sqladmin import Admin
 
 from models import Pokemon, PokemonAdmin
 
