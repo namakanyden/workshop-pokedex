@@ -255,6 +255,7 @@ Ak teraz otvoríte prehliadač na adrese [http://localhost:8080/admin/], uvidít
 
 ![Admin rozhranie pre Pokémonov](resources/images/pokemon.admin.ui.png)
 
+**Poznámka pre inštruktora:** Posledné dve úlohy odporúčam kombinovať. Začať len s premennou `column_list`, ktorá zobrazí príslušné stĺpce o Pokémonovi a následne pridávať a modifikovať ostatné premenné modelu `PokemonAdmin`. A samozrejme bez nutnosti reštartovať aplikáciu - vždy stačí admin rozhranie len obnoviť v prehliadači.
 
 
 ## Krok 5. Získanie zoznamu všetkých Pokémonov
