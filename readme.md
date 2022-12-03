@@ -264,7 +264,8 @@ Ak teraz otvoríte prehliadač na adrese [http://localhost:8080/admin/], uvidít
 
 V prípade, že klient vytvorí HTTP dopyt na endpoint `/api/pokemons`, v odpovedi dostane zoznam Pokémonov.
 
-**Úloha 4.1** Vytvorte funkciu `get_pokemon_list()`, ktorá vráti (zatiaľ) prázdny zoznam Pokémonov.
+
+**Úloha 5.1** Vytvorte funkciu `get_pokemon_list()`, ktorá vráti (zatiaľ) prázdny zoznam Pokémonov.
 
 ```python
 @app.get("/api/pokemons")
@@ -272,7 +273,8 @@ def get_pokemon_list():
     return []
 ```
 
-**Úloha 4.2** Overte vytvorený endpoint.
+
+**Úloha 5.2** Overte vytvorený endpoint.
 
 Program aplikácie nie je potrebné zastavovať a znovu spúšťať. Stačí len spustiť HTTP klienta na adrese [`http://localhost:8080/api/pokemons`](http://localhost:8080/api/pokemons):
 
@@ -293,8 +295,7 @@ server: uvicorn
 ```
 
 
-
-**Úloha 4.4** Upravte pohľad pre endpoint `/api/pokemons` tak, aby miesto prázdneho zoznamu vrátil zoznam všetkých Pokémonov, ktorí sa nachádzajú v databáze.
+**Úloha 5.3** Upravte pohľad pre endpoint `/api/pokemons` tak, aby miesto prázdneho zoznamu vrátil zoznam všetkých Pokémonov, ktorí sa nachádzajú v databáze.
 
 V jazyku SQL by sme zoznam všetkých Pokémonov získali príkazom
 
@@ -345,11 +346,13 @@ def get_pokemon_list():
 
 **Poznámka:** Tento problém sa zvykne riešiť pomocou **stránkovania**. Stránkovanie si je možné vytvoriť ručne alebo je možné použiť existujúci modul [FastAPI Pagination](https://uriyyo-fastapi-pagination.netlify.app/).
 
-## Krok 5. Získanie detailu o konkrétnom Pokémonovi
+
+## Krok 6. Získanie detailu o konkrétnom Pokémonovi
 
 Na získanie detailov o konkrétnom Pokémonovi vytvoríme endpoint s parametrom `/api/pokemons/{pokedex_number}`, ktorý vráti JSON dokument s príslušnými detailami. Za týmto účelom vytvoríme nový pohľad, ktorý bude reprezentovaný novou funkciou.
 
-**Úloha 5.1** Vytvorte funkciu `get_pokemon_detail()`, ktorá vráti (zatiaľ) prázdny JSON dokument.
+
+**Úloha 6.1** Vytvorte funkciu `get_pokemon_detail()`, ktorá vráti (zatiaľ) prázdny JSON dokument.
 
 Funkcia bude mať tieto parametre:
 
@@ -361,7 +364,8 @@ def get_pokemon_detail(pokedex_number: int):
     return {}
 ```
 
-**Úloha 5.2** Otestujte vytvorený pohľad.
+
+**Úloha 6.2** Otestujte vytvorený pohľad.
 
 Ak vytvoríme požiadavku s korektnou cestou, v odpovedi dostaneme prázdny JSON dokument. Napríklad:
 
@@ -397,7 +401,8 @@ server: uvicorn
 }
 ```
 
-**Úloha 5.3** Upravte pohľad pre endpoint `/api/pokemons/{pokedex_number}` tak, aby miesto prázdneho JSON objektu vrátil  objekt s dátami o príslušnom Pokémonovi.
+
+**Úloha 6.3** Upravte pohľad pre endpoint `/api/pokemons/{pokedex_number}` tak, aby miesto prázdneho JSON objektu vrátil  objekt s dátami o príslušnom Pokémonovi.
 
 V jazyku SQL by sme detaily o Pokémonovi s číslom v Pokédexe _25_ získali príkazom
 
@@ -425,7 +430,8 @@ def get_pokemon_detail(pokedex_number: int):
         return pokemon
 ```
 
-**Úloha 5.4** Overte správnosť vašej implementácie.
+
+**Úloha 6.4** Overte správnosť vašej implementácie.
 
 Ak napríklad požiadate o detaily Pokémona s identifikačným číslom v Pokédexe _42_:
 
@@ -466,7 +472,8 @@ Internal Server Error
 
 čo nie je veľmi sexi :-(
 
-**Úloha 5.5** Zabezpečte, aby v prípade, ak Pokémon s daným číslom neexistuje, mala HTTP odpoveď stavový kód `404`.
+
+**Úloha 6.5** Zabezpečte, aby v prípade, ak Pokémon s daným číslom neexistuje, mala HTTP odpoveď stavový kód `404`.
 
 Riešiť tento problém môžeme v princípe dvoma spôsobmi:
 
@@ -486,7 +493,7 @@ def get_pokemon_detail(pokedex_number: int):
         return pokemon
 ```
 
-## Krok 6. Automagická dokumentácia REST API
+## Krok 7. Automagická dokumentácia REST API
 
 Pre vytvorené REST API rámec FastAPI automaticky generuje dokumentáciu v dvoch formátoch:
 
@@ -495,11 +502,13 @@ Pre vytvorené REST API rámec FastAPI automaticky generuje dokumentáciu v dvoc
 
 Pre viac možností, ako je napríklad dokumentácia jednotlivých endpointov, sa pozrite na oficiálnu dokumntáciu rámca FastAPI.
 
-## Krok 7. HTML pohľad pre domovskú stránku pomocou šablónovacieho systému Jinja
+
+## Krok 8. HTML pohľad pre domovskú stránku pomocou šablónovacieho systému Jinja
 
 ![Jinja Logo](https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Jinja_software_logo.svg/1280px-Jinja_software_logo.svg.png)
 
-**Úloha 7.1** Zmeňte typ dokumentu odpovede pre cestu `/` na HTML.
+
+**Úloha 8.1** Zmeňte typ dokumentu odpovede pre cestu `/` na HTML.
 
 Predvolene je typ výsledného dokumentu JSON. Ak chceme zmeniť typ dokumentu odpovede na HTML, do dekorátora funkcie ošetrujúcej cestu pridáme parameter `response_class=HTMLResponse` .
 
@@ -523,7 +532,8 @@ server: uvicorn
 Hello world!
 ```
 
-**Úloha 7.2** Inicializujte šablónovací systém Jinja pre použitie v aplikácii.
+
+**Úloha 8.2** Inicializujte šablónovací systém Jinja pre použitie v aplikácii.
 
 Potrebujeme inicializovať dve veci:
 
@@ -544,7 +554,8 @@ app.mount("/static",
 templates = Jinja2Templates(directory="templates")
 ```
 
-**Úloha 7.3** Miesto textu `"Hello world!"` vráťte v odpovedi HTML stránku zo šablóny `homepage.tpl.html`.
+
+**Úloha 8.3** Miesto textu `"Hello world!"` vráťte v odpovedi HTML stránku zo šablóny `homepage.tpl.html`.
 
 Funkcii `get_homepage()` pridáme parameter `request`, ktorý je typu `Request`. Ten je potrebný pri skladaní šablóny šablónovacím systémom Jinja.
 
@@ -567,13 +578,16 @@ def hello(request: Request):
     return templates.TemplateResponse('home.tpl.html', context)
 ```
 
-**Úloha 7.4** Otestujte aktualizovaný pohľad.
+
+**Úloha 8.4** Otestujte aktualizovaný pohľad.
 
 Ak otvoríte adresu [http://localhost:8080/](http://localhost:8080/) vo webovom prehliadači, zobrazí sa obsah Jinja šablóny pre domovskú, resp. hlavnú stránku.
 
-## Krok 8. Pokédex ako HTML stránka
 
-**Úloha 8.1** Vytvorte funkciu `view_list_of_pokemons()`, pomocou ktorej zobrazíte webovú stránku Pokédex-u.
+## Krok 9. Pokédex ako HTML stránka
+
+
+**Úloha 9.1** Vytvorte funkciu `view_list_of_pokemons()`, pomocou ktorej zobrazíte webovú stránku Pokédex-u.
 
 V podstate len zmodifikujeme funkciu `get_pokemon_list()` a zabezpečíme, aby miesto JSON dokumentu vrátila šablónu zo súboru `pokemon-list.tpl.html`. Do objektu kontextu akurát pridáme do kľúča `pokemons` zoznam výsledkov dopytu z databázy.
 
@@ -593,15 +607,18 @@ def view_list_of_pokemons(request: Request):
         return templates.TemplateResponse('pokemon-list.tpl.html', context)
 ```
 
-**Úloha 8.2** Overte vytvorenú funkciu.
+
+**Úloha 9.2** Overte vytvorenú funkciu.
 
 Ak otvoríte prehliadač na adrese [http://localhost:8080/pokedex](http://localhost:8080/pokedex), zobrazí sa vám _50_ prvých Pokémonov z Pokédexu.
 
 ![Pokémoni v Pokédexe](resources/images/pokedex.jpg)
 
-## Krok 9. Detail Pokémona ako HTML stránka
 
-**Úloha 9.1** Vytvorte funkciu `view_detail_of_pokemon()`, pomocou ktorej zobrazíte webovú stránku s detailami o konkrétnom Pokémonovi.
+## Krok 10. Detail Pokémona ako HTML stránka
+
+
+**Úloha 10.1** Vytvorte funkciu `view_detail_of_pokemon()`, pomocou ktorej zobrazíte webovú stránku s detailami o konkrétnom Pokémonovi.
 
 Opäť pôjde o modifikáciu funkcie `get_pokemon_detail()`, ktorá vráti informácie o Pokémonovi v podobe HTML dokumentu. Ak sa Pokémon nájde, funkcia vráti šablónu `pokemon-detail.tpl.html`. V opačnom prípade vráti šablónu `404.tpl.html`.
 
@@ -627,7 +644,8 @@ def view_detail_of_pokemon(request: Request, pokedex_number: int):
         return templates.TemplateResponse("pokemon-detail.tpl.html", context)
 ```
 
-**Úloha 9.2** Overte vytvorenú funkciu.
+
+**Úloha 10.2** Overte vytvorenú funkciu.
 
 Ak otvoríte prehliadač na adrese [http://localhost:8080/pokedex/25](http://localhost:8080/pokedex/25), zobrazia sa vám informácie o Pokémonovi _Pikatchu_.
 
@@ -636,12 +654,10 @@ Ak otvoríte prehliadač na adrese [http://localhost:8080/pokedex/25](http://loc
 **Úloha 10.1** Rozšírte pohľad definovaný funkciou `view_list_of_pokemons()` o tzv. _query parameter_ `q`, ktorý pomocou ktorej zobrazíte webovú stránku s detailami o konkrétnom Pokémonovi.
 
 ```python
-from typing import Union
-
 from sqlmodel import or_
 
 @app.get('/pokedex', response_class=HTMLResponse)
-def view_list_of_pokemons(request: Request, q: Union[str, None] = None):
+def view_list_of_pokemons(request: Request, q: str | None = None):
     with Session(engine) as session:
         if q is None:
             statement = select(Pokemon).limit(50)
@@ -658,11 +674,13 @@ def view_list_of_pokemons(request: Request, q: Union[str, None] = None):
         return templates.TemplateResponse('pokemon-list.tpl.html', context)
 ```
 
+
 ## Ďalšie zdroje
 
 * [Pokédex](https://www.pokemon.com/us/pokedex/) - online pomôcka každého správneho lovca Pokémonov
 * [FastAPI](https://fastapi.tiangolo.com/) - mikro webový rámec jazyka Python
 * [SQLModel](https://sqlmodel.tiangolo.com/) - knižnica pre interakciu s SQL databázami s objektami v jazyku Python
+* [SQLAdmin](https://aminalaee.dev/sqladmin/) - admin rozhranie pre modely napísané pomocou knižnice *SQLModel*
 * [Jinja](https://jinja.palletsprojects.com) - šablónovací systém
 * Real Python: [Build a URL Shortener With FastAPI and Python](https://realpython.com/build-a-python-url-shortener-with-fastapi/) - návod, ako vytvoriť skračovať adries v štýle [bit.ly](https://bitly.com) pomocou mikro webového rámca FastAPI
 * Real Python: [Primer on Jinja Templating](https://realpython.com/primer-on-jinja-templating/) - návod, ako pracovať a používať šablónovací systém Jinja (v mikro webovom rámci Flask)
