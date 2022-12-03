@@ -3,56 +3,70 @@
 {% block content %}
 <div class="container text-center">
 
-    <div id="carousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-indicators">
-          <button type="button" data-bs-target="#carousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-          <button type="button" data-bs-target="#carousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-          <button type="button" data-bs-target="#carousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  <div id="carousel" class="carousel carousel-dark slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#carousel" data-bs-slide-to="0" class="active" aria-current="true"
+        aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#carousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+      <button type="button" data-bs-target="#carousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+
+      <div class="carousel-item active">
+        <a href="https://fastapi.tiangolo.com/">
+          <img src="/static/images/banner-fastapi.png" class="d-block w-100" alt="FastAPI Logo">
+        </a>
+        <div class="carousel-caption d-none d-md-block" style="color: black">
+          <p>
+            <a href="https://fastapi.tiangolo.com/">FastAPI</a> framework, high performance, easy to learn, fast to
+            code, ready for production.
+          </p>
         </div>
-        <div class="carousel-inner">
-          
-            <div class="carousel-item active">
-            <img src="https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png" class="d-block w-100" alt="FastAPI Logo">
-            <div class="carousel-caption d-none d-md-block" style="color: black">
-              <h5>FastAPI</h5>
-              <p>FastAPI framework, high performance, easy to learn, fast to code, ready for production.</p>
-            </div>
-          </div>
+      </div>
 
-          <div class="carousel-item">
-            <img src="https://twinfinite.net/wp-content/uploads/2021/08/pokedex-switch-1000x600.jpg" class="d-block w-100" alt="Pokedex">
-            <div class="carousel-caption d-none d-md-block">
-              <h5>Pokédex</h5>
-              <p>Some representative placeholder content for the second slide.</p>
-            </div>
-          </div>
-
-          <div class="carousel-item">
-            <img src="https://pbs.twimg.com/media/FV4LPVvX0AENFHm?format=jpg&name=4096x4096" class="d-block w-100" alt="Pycon SK 2022">
-            <div class="carousel-caption d-none d-md-block">
-              <h5>Third slide label</h5>
-              <p>Some representative placeholder content for the third slide.</p>
-            </div>
-          </div>
-
+      <div class="carousel-item">
+        <a href="https://sqlmodel.tiangolo.com/">
+          <img src="/static/images/banner-sqlmodel.png" class="d-block w-100" alt="SQLModel">
+        </a>
+        <div class="carousel-caption d-none d-md-block" style="color: black">
+          <p>
+            <a href="https://sqlmodel.tiangolo.com/">SQLModel</a>, SQL databases in Python, designed for simplicity,
+            compatibility, and robustness.
+          </p>
         </div>
+      </div>
 
-        <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
+      <div class="carousel-item">
+        <a href="https://www.pokemon.com/us/pokedex/">
+          <img src="/static/images/banner-pokedex.png" class="d-block w-100" alt="Pokédex">
+        </a>
+        <div class="carousel-caption d-none d-md-block">
+          <p>
+            <a href="https://www.pokemon.com/us/pokedex/">The Pokédex</a> is an electronic device designed to catalog
+            and provide information regarding the various
+            species of Pokémon.
+          </p>
+        </div>
+      </div>
+
     </div>
 
-    <div class="d-flex justify-content-center">
-        <div>
-            <h4>Name or number:</h4>
-            {% include "searchbar.tpl.html" %}
-        </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+
+  <div class="d-flex justify-content-center">
+    <div>
+      <h4>Name or number:</h4>
+      {% include "searchbar.tpl.html" %}
     </div>
+  </div>
 
 
 

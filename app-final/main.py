@@ -1,23 +1,26 @@
-from typing import Union
-
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from sqladmin import Admin
 import uvicorn
 from sqlmodel import create_engine, select, Session, or_
 
-from models import Pokemon
+from models import Pokemon, PokemonAdmin
 
 
-engine = create_engine("sqlite:///pokedex.sqlite")
 app = FastAPI(title="Pokédex")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
+# admin view
+engine = create_engine("sqlite:///pokedex.sqlite")
+admin = Admin(app, engine)
+admin.add_view(PokemonAdmin)
+
 
 @app.get("/", response_class=HTMLResponse)
-def hello(request: Request):
+def homepage(request: Request):
     context = {"request": request, "title": "Vitajte v Pokédexe"}
     return templates.TemplateResponse("home.tpl.html", context)
 
@@ -41,12 +44,12 @@ def get_pokemon_detail(pokedex_number: int):
 
 
 @app.get('/pokedex', response_class=HTMLResponse)
-def view_list_of_pokemons(request: Request, q: Union[str, None] = None):
+def view_list_of_pokemons(request: Request, q: str | None = None):
     with Session(engine) as session:
         if q is None:
-            statement = select(Pokemon).limit(50)
+            statement = select(Pokemon).limit(40)
         else:
-            statement = select(Pokemon).where(or_(Pokemon.name.ilike(f'%{q}%'), Pokemon.id == q)).limit(50)
+            statement = select(Pokemon).where(or_(Pokemon.name.ilike(f'%{q}%'), Pokemon.id == q)).limit(40)
         pokemons = session.exec(statement).all()
 
         context = {

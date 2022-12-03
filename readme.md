@@ -20,6 +20,7 @@ Pokédex vytvoríme pomocou mladého a stále [populárnejšieho](https://survey
 4. Naučiť sa vytvárať jednoduché REST API.
 5. Naučiť sa vytvárať jednoduché HTML pohľady pomocou šablónovacieho systému [Jinja](https://jinja.palletsprojects.com/).
 
+
 ## Krok 1. Čo budeme potrebovať?
 
 Ešte predtým, ako sa pustíme do tvorby aplikácie, si pripravíme prostredie pre prácu. Konkrétne budeme potrebovať:
@@ -27,6 +28,7 @@ Ešte predtým, ako sa pustíme do tvorby aplikácie, si pripravíme prostredie 
 * editor kódu jazyka Python (je možné použiť aj  [Thonny](https://thonny.org), ale odporúčam IDE, ktoré zvláda prácu s viacerými súbormi a nemá problém s automatickým dopĺňaním kódu)
 * stiahnutú kostru projektu z priečinku `app-template/`
 * nainštalované balíčky zo súboru `requirements.txt`
+
 
 ## Krok 2. Hello world!
 
@@ -109,6 +111,7 @@ Ako je možné vidieť, typ odpovede (kľúč `content-type` v hlavičke odpoved
 
 A práve vytvorením jednoduchého HTTP REST API budeme pokračovať.
 
+
 ## Krok 3. Modelujeme Pokémona
 
 Naša aplikácia bude pracovať s perzistentnými údajmi. Tie sa nachádzajú uložené v súbore `pokedex.lite.sqlite`. Databáza obsahuje všetkých _801_ aktuálne známych Pokémonov. Zdrojom dát je dataset zverejnený na serveri [Kaggle](https://www.kaggle.com/datasets/rounakbanik/pokemon). Na komunikáciu s databázou SQLite budeme používať rámec [SQLModel](https://sqlmodel.tiangolo.com/).
@@ -135,7 +138,7 @@ pokedex.lite.sqlite> .schema pokemon
 
 **Úloha 3.1** V koreňovom priečinku aplikácie vytvorte súbor `models.py`.
 
-Do tohto súboru zapíšeme modely, ktoré budeme vytvárať. V našom prípade budeme pracovať len s jedným modelom, ktorým opíšeme Pokémona. 
+Do tohto súboru zapíšeme modely, ktoré budeme vytvárať. V našom prípade budeme pracovať len s jedným modelom, ktorým opíšeme Pokémona.
 
 **Poznámka:** Pre väčšie projekty je však výhodnejšie vytvoriť samostatný balík (package) s názvom `models` a každý model do neho uložiť ako samostatný modul (súbor).
 
@@ -173,7 +176,91 @@ Pri čítaní a zapisovaní do databázy bude automaticky pracovať s tabuľkou 
 __tablename__ = "pokemon"
 ```
 
-## Krok 4. Získanie zoznamu všetkých Pokémonov
+
+## Krok 4. Admin rozhranie
+
+Ak chceme pracovať s údajmi uloženými v databáze, musíme sa k databáze pripojiť z našej aplikácie. V tomto kroku preto vytvoríme spojenie s databázou spolu s admin rozhraním z modulu [SQLAlchemy Admin](https://github.com/aminalaee/sqladmin).
+
+
+**Úloha 4.1** Vytvorte spojenie s databázou.
+
+Na začiatok súboru `main.py` vytvoríme premennú `engine`, pomocou ktorej sa budeme vedieť spojiť s databázou.
+
+Do súboru `main.py` Vložíme nasledovný fragment kódu:
+
+```python
+from sqlmodel import create_engine
+
+# db engine
+engine = create_engine('sqlite:///pokedex.lite.sqlite')
+```
+
+
+**Úloha 4.2** Vytvorte rozhranie pre administrátora pomocou modulu `sqladmin`.
+
+Admin rozhranie vytvoríme veľmi jednoducho: pod riadok, v ktorom sme vytvorili objek `engine` vytvoríme admin rozhranie riadokm:
+
+```python
+from sqladmin import Admin
+
+engine = create_engine("sqlite:///pokedex.sqlite")
+admin = Admin(app, engine)
+```
+
+
+**Úloha 4.3** Overte funkčnosť admin rozhrania otvorením adresy [http://localhost:8080/admin/] v prehliadači.
+
+Pokiaľ je všetko v poriadku, v prehliadači sa vám zobrazí prázdna obrazovka admin rozhrania.
+
+![Prázdne admin rozhranie](resources/images/empty.admin.ui.png)
+
+
+
+**Úloha 4.4** Vytvorte model pre zobrazenie Pokémonov v admin rozhraní.
+
+V admin rozhraní zatiaľ nič nevidíme. Aby sme v ňom mohli vidieť Pokémonov z databázy, musíme pre ne vytvoriť samostatný model. Do súboru s modelmi preto vytvoríme nový model, ktorým opíšeme, čo a ako sa má v admin rozhraní zobrazovať.
+
+Model nazveme `PokemonAdmin`, bude potomkom triedy `ModelView` a bude opisovať admin rozhranie modelu `Pokemon`. Kód bude vyzerať napríklad takto:
+
+```python
+from sqladmin import ModelView
+
+class PokemonAdmin(ModelView, model=Pokemon):
+    page_size = 20
+    icon = "fa-solid fa-spaghetti-monster-flying"
+    column_searchable_list = [Pokemon.name]
+    column_sortable_list = [Pokemon.name, Pokemon.classification, Pokemon.type1, Pokemon.type2]
+    column_list = [
+        Pokemon.pokedex_number,
+        Pokemon.name,
+        Pokemon.classification,
+        Pokemon.type1,
+        Pokemon.type2
+    ]
+```
+
+**Poznámka:** Možnosti konfigurácie zobrazenia modelu v admin rozhraní sú široké. O všetkých možnostiach sa dozviete na [stránkach dokumentácie modulu](https://aminalaee.dev/sqladmin/configurations/).
+
+
+**Úloha 4.5** Pridajte model `PokemonAdmin` do admin rozhrania.
+
+Aby sme v admin rozhraní videli našich Pokémonov z databázy, musíme náš model `PokemonAdmin` pridať do `admin` objektu. To urobíme v súbore `main.py`:
+
+```python
+from models import PokemonAdmin
+
+engine = create_engine("sqlite:///pokedex.sqlite")
+admin = Admin(app, engine)
+admin.add_view(PokemonAdmin)
+```
+
+Ak teraz otvoríte prehliadač na adrese [http://localhost:8080/admin/], uvidíte v bočnom stĺpci názov nášho modelu. Ak naň kliknete, uvidíte zoznam všetkých Pokémonov, ktorých máme v databáze.
+
+![Admin rozhranie pre Pokémonov](resources/images/pokemon.admin.ui.png)
+
+
+
+## Krok 5. Získanie zoznamu všetkých Pokémonov
 
 V prípade, že klient vytvorí HTTP dopyt na endpoint `/api/pokemons`, v odpovedi dostane zoznam Pokémonov.
 
@@ -205,18 +292,7 @@ server: uvicorn
 []
 ```
 
-**Úloha 4.3** Vytvorte spojenie s databázou.
 
-Na začiatok súboru `main.py` vytvoríme premennú `engine`, pomocou ktorej sa budeme vedieť spojiť s databázou.
-
-ložíme nasledovný fragment kódu. Tým vytvoríme objekt `session`, pomocou ktorého budeme komunikovať s databázou.
-
-```python
-from sqlmodel import create_engine
-
-# db engine
-engine = create_engine('sqlite:///pokedex.lite.sqlite')
-```
 
 **Úloha 4.4** Upravte pohľad pre endpoint `/api/pokemons` tak, aby miesto prázdneho zoznamu vrátil zoznam všetkých Pokémonov, ktorí sa nachádzajú v databáze.
 
@@ -326,7 +402,7 @@ server: uvicorn
 V jazyku SQL by sme detaily o Pokémonovi s číslom v Pokédexe _25_ získali príkazom
 
 ```sql
-SELECT * 
+SELECT *
 FROM pokemon
 WHERE pokedex_number=1;
 ```
@@ -462,7 +538,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
-app.mount("/static", 
+app.mount("/static",
           StaticFiles(directory=Path(__file__).parent / 'static'),
           name="static")
 templates = Jinja2Templates(directory="templates")
