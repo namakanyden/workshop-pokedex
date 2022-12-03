@@ -8,7 +8,7 @@ Pokédex je pomôcka každého správneho trénera Pokémonov. Ak si trénerom P
 
 Pokédex vytvoríme pomocou mladého a stále [populárnejšieho](https://survey.stackoverflow.co/2022/#most-loved-dreaded-and-wanted-webframe-love-dread) mikro webového rámca [FastAPI](https://fastapi.tiangolo.com). Keďže je primárne určený na tvorbu REST API, začneme endpoint-mi na získanie zoznamu všetkých Pokémonov, ale rovnako vytvoríme endpoint na získanie informácií o konkrétnom Pokémonovi na základe jeho čísla v Pokédexe. Ukážeme si však aj to, ako pomocou rámca FastAPI vytvárať dynamické HTML stránky pomocou šablónovacieho systému [Jinja](https://jinja.palletsprojects.com/). A samozrejme - dáta o Pokémonoch sú uložené v SQLite databáze a budeme k nim pristupovať pomocou balíka [SQLModel](https://sqlmodel.tiangolo.com).
 
-**Odporúčaný čas:** 120 minút
+**Odporúčaný čas:** 120 až 180 minút
 
 **Upozornenie:** Keďže je tento workshop pomerne krátky, nebudeme v ňom vedieť aplikovať tie najlepšie prístupy pre tvorbu aplikácií pomocou rámca FastAPI.
 
