@@ -491,22 +491,13 @@ def get_pokemon_detail(pokedex_number: int):
         return pokemon
 ```
 
-## Krok 7. Automagická dokumentácia REST API
 
-Pre vytvorené REST API rámec FastAPI automaticky generuje dokumentáciu v dvoch formátoch:
-
-1. [Redoc](https://redocly.com/redoc/) - dostupný na adrese [http://localhost:8080/redoc](http://localhost:8080/redoc)
-2. [OpenAPI/Swagger](https://swagger.io/) - dostupný na adrese [http://localhost:8080/docs](http://localhost:8080/docs)
-
-Pre viac možností, ako je napríklad dokumentácia jednotlivých endpointov, sa pozrite na oficiálnu dokumntáciu rámca FastAPI.
-
-
-## Krok 8. HTML pohľad pre domovskú stránku pomocou šablónovacieho systému Jinja
+## Krok 7. HTML pohľad pre domovskú stránku pomocou šablónovacieho systému Jinja
 
 ![Jinja Logo](https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Jinja_software_logo.svg/1280px-Jinja_software_logo.svg.png)
 
 
-**Úloha 8.1** Zmeňte typ dokumentu odpovede pre cestu `/` na HTML.
+**Úloha 7.1** Zmeňte typ dokumentu odpovede pre cestu `/` na HTML.
 
 Predvolene je typ výsledného dokumentu JSON. Ak chceme zmeniť typ dokumentu odpovede na HTML, do dekorátora funkcie ošetrujúcej cestu pridáme parameter `response_class=HTMLResponse` .
 
@@ -531,7 +522,7 @@ Hello world!
 ```
 
 
-**Úloha 8.2** Inicializujte šablónovací systém Jinja pre použitie v aplikácii.
+**Úloha 7.2** Inicializujte šablónovací systém Jinja pre použitie v aplikácii.
 
 Potrebujeme inicializovať dve veci:
 
@@ -539,21 +530,17 @@ Potrebujeme inicializovať dve veci:
 2. povedať rámcu FastAPI, v ktorom priečinku sa budú nachádzať statické súbory (ako napr. obrázky, CSS štýly, JavaScript-y, a pod.)
 
 ```python
-from pathlib import Path
-
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
-app.mount("/static",
-          StaticFiles(directory=Path(__file__).parent / 'static'),
-          name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 ```
 
 
-**Úloha 8.3** Miesto textu `"Hello world!"` vráťte v odpovedi HTML stránku zo šablóny `homepage.tpl.html`.
+**Úloha 7.3** Miesto textu `"Hello world!"` vráťte v odpovedi HTML stránku zo šablóny `homepage.tpl.html`.
 
 Funkcii `get_homepage()` pridáme parameter `request`, ktorý je typu `Request`. Ten je potrebný pri skladaní šablóny šablónovacím systémom Jinja.
 
@@ -577,9 +564,21 @@ def hello(request: Request):
 ```
 
 
-**Úloha 8.4** Otestujte aktualizovaný pohľad.
+**Úloha 7.4** Otestujte aktualizovaný pohľad.
 
 Ak otvoríte adresu [http://localhost:8080/](http://localhost:8080/) vo webovom prehliadači, zobrazí sa obsah Jinja šablóny pre domovskú, resp. hlavnú stránku.
+
+
+## Krok 8. Automagická dokumentácia REST API
+
+Pre vytvorené REST API rámec FastAPI automaticky generuje dokumentáciu v dvoch formátoch:
+
+1. [Redoc](https://redocly.com/redoc/) - dostupný na adrese [http://localhost:8080/redoc](http://localhost:8080/redoc)
+2. [OpenAPI/Swagger](https://swagger.io/) - dostupný na adrese [http://localhost:8080/docs](http://localhost:8080/docs)
+
+K odkazom na oba typy dokumentácie sa dostanete cez menu na domovskej stránke.
+
+Pre viac možností, ako je napríklad dokumentácia jednotlivých endpointov, sa pozrite na oficiálnu dokumntáciu rámca FastAPI.
 
 
 ## Krok 9. Pokédex ako HTML stránka
