@@ -21,69 +21,93 @@ admin.add_view(PokemonAdmin)
 
 @app.get("/", response_class=HTMLResponse)
 def homepage(request: Request):
+    # render templates
     context = {"request": request, "title": "Vitajte v Pokédexe"}
     return templates.TemplateResponse("home.tpl.html", context)
 
 
 @app.get("/api/pokemons")
 def get_pokemon_list():
-    with Session(engine) as session:
-        statement = select(Pokemon).limit(50)
-        pokemons = session.exec(statement).all()
-        return pokemons
+    # create statement
+    statement = select(Pokemon).limit(50)
+
+    # connect to db and execute query
+    session = Session(engine)
+    pokemons = session.exec(statement).all()
+    session.close()
+
+    # return results
+    return pokemons
 
 
 @app.get("/api/pokemons/{pokedex_number}")
 def get_pokemon_detail(pokedex_number: int):
-    with Session(engine) as session:
-        statement = select(Pokemon).where(Pokemon.pokedex_number == pokedex_number)
-        pokemon = session.exec(statement).one_or_none()
-        if pokemon is None:
-            raise HTTPException(status_code=404, detail="Pokemon not found.")
-        return pokemon
+    # create stament
+    statement = select(Pokemon).where(Pokemon.pokedex_number == pokedex_number)
+
+    # connect to db and execute query
+    session = Session(engine)
+    pokemon = session.exec(statement).one_or_none()
+    session.close()
+
+    # return results
+    if pokemon is None:
+        raise HTTPException(status_code=404, detail="Pokemon not found.")
+    return pokemon
 
 
 @app.get('/pokedex', response_class=HTMLResponse)
-def view_list_of_pokemons(request: Request, q: str | None = None):
-    with Session(engine) as session:
-        if q is None:
-            statement = select(Pokemon).limit(40)
-        else:
-            statement = (
-                select(Pokemon)
-                .where(or_(Pokemon.name.ilike(f'%{q}%'), Pokemon.id == q))
-                .limit(40)
-            )
-        pokemons = session.exec(statement).all()
+def view_list_of_pokemons(request: Request, query: str | None = None):
+    # create statement
+    if query is None:
+        statement = select(Pokemon).limit(40)
+    else:
+        statement = (
+            select(Pokemon)
+            .where(or_(Pokemon.name.ilike(f'%{query}%'), Pokemon.id == query))
+            .limit(40)
+        )
 
-        context = {
-            'request': request,
-            'title': 'Výsledky hľadania | Pokédex',
-            'pokemons': pokemons
-        }
+    # connect to db and execute query
+    session = Session(engine)
+    pokemons = session.exec(statement).all()
+    session.close()
 
-        return templates.TemplateResponse('pokemon-list.tpl.html', context)
+    # render template
+    context = {
+        'request': request,
+        'title': 'Výsledky hľadania | Pokédex',
+        'pokemons': pokemons
+    }
+
+    return templates.TemplateResponse('pokemon-list.tpl.html', context)
 
 
 @app.get("/pokedex/{pokedex_number}", response_class=HTMLResponse)
 def view_detail_of_pokemon(request: Request, pokedex_number: int):
-    with Session(engine) as session:
-        statement = select(Pokemon).where(Pokemon.pokedex_number == pokedex_number)
-        pokemon = session.exec(statement).one_or_none()
-        if pokemon is None:
-            context = {
-                "request": request,
-                "title": "Pokémon sa nenašiel | Pokédex"
-            }
-            return templates.TemplateResponse("404.tpl.html", context)
+    # create statement
+    statement = select(Pokemon).where(Pokemon.pokedex_number == pokedex_number)
 
+    # connect to db and execute query
+    session = Session(engine)
+    pokemon = session.exec(statement).one_or_none()
+    session.close()
+
+    # process results and render templates
+    if pokemon is None:
         context = {
             "request": request,
-            "title": f"{pokemon.name} | Pokédex",
-            "pokemon": pokemon,
+            "title": "Pokémon sa nenašiel | Pokédex"
         }
+        return templates.TemplateResponse("404.tpl.html", context)
 
-        return templates.TemplateResponse("pokemon-detail.tpl.html", context)
+    context = {
+        "request": request,
+        "title": f"{pokemon.name} | Pokédex",
+        "pokemon": pokemon,
+    }
+
+    return templates.TemplateResponse("pokemon-detail.tpl.html", context)
 
 
 if __name__ == "__main__":

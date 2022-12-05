@@ -80,6 +80,9 @@ from sqlmodel import create_engine, select, Session, or_
 from sqladmin import Admin
 ```
 
+Importovať budete len moduly, ktoré budú vytvorené neskôr.
+
+
 **Úloha 2.2** Spustite a overte spustenú aplikáciu.
 
 Po spustení bude aplikácia dostupná na adrese [http://0.0.0.0:8080](http://0.0.0.0:8080), resp. na adrese [http://localhost:8080](http://localhost:8080), ktorú budeme používať aj my. Ak otvoríme prehliadač na tejto adrese, uvidíme v ňom text:
@@ -319,11 +322,14 @@ Aby sme ho však spojazdnili, potrebujeme otvoriť spojenie s databázou a po vy
 ```python
 @app.get("/api/pokemons")
 def get_pokemon_list():
-    with Session(engine) as session:
-        statement = select(Pokemon)
-        pokemons = session.exec(statement).all()
-        return pokemons
+   statement = select(Pokemon)
+   session = Session(engine)
+   pokemons = session.exec(statement).all()
+   session.close()
+   return pokemons
 ```
+
+**Poznámka:** Pracovať s databázou je možné viacerými spôsobmi. To, pre ktorý spôsob sa rozhodnete, závisí od skúseností vašich účastníkov. Pre prácu s objektom typu `Session` môžete použiť napr. tzv. _kontext provider_ alebo použiť _dependency injection_. Detaily použitia nájdete v [dokumentácii knižnice SQLModel](https://sqlmodel.tiangolo.com/).
 
 Nie je však vždy veľmi praktické vracať zoznam úplne všetkých položiek, ktorých môžu byť tisíce až milióny. Zoznam výsledkov obmedzíme na _50_. V podstate urobíme niečo, čo by sme v jazyku SQL zapísali ako:
 
@@ -336,10 +342,11 @@ Výsledná podoba pohľadu bude teda vyzerať takto:
 ```python
 @app.get("/api/pokemons")
 def get_pokemon_list():
-    with Session(engine) as session:
-        statement = select(Pokemon).limit(50)
-        pokemons = session.exec(statement).all()
-        return pokemons
+   statement = select(Pokemon).limit(50)
+   session = Session(engine)
+   pokemons = session.exec(statement).all()
+   session.close()
+   return pokemons
 ```
 
 **Poznámka:** Tento problém sa zvykne riešiť pomocou **stránkovania**. Stránkovanie si je možné vytvoriť ručne alebo je možné použiť existujúci modul [FastAPI Pagination](https://uriyyo-fastapi-pagination.netlify.app/).
