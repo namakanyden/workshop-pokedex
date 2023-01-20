@@ -6,4 +6,4 @@ litecli
 jinja2
 sqlmodel
 sqladmin
-# httpie
+httpie

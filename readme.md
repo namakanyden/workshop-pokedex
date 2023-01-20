@@ -146,6 +146,23 @@ Do tohto súboru zapíšeme modely, ktoré budeme vytvárať. V našom prípade 
 
 **Úloha 3.2** Vytvorte triedu `Pokemon`, ktorá bude potomkom triedy `SQLModel` a bude reprezentovať model Pokémona.
 
+Aby sme rozumeli tomu, čo je to model, môžeme si zobrať na pomoc hraciu/zberateľskú *Pokémon* kartu:
+
+![Pikachu](resources/images/pikachu.jpg)
+
+Na karte sa nachádza niekoľko údajov o Pokémonovi Pikachu. Menovať môžeme napr.:
+
+* meno - `Pikachu`
+* číslo Pokémona v Pokédexe - `025`
+* klasifikácia - `Mouse Pokémon`
+* výška - `1.04"`
+* hmotnosť - `13.2lbs`
+* typ pokémona - `electric` (žltá karta, resp. blesk v pravom hornom rohu)
+
+Z týchto vlastností uvedených na karte môžeme vytvoriť vlastný model, ktorý bude opisovať ľubovoľného *Pokémon*-a. Model vytvoríme ako **triedu**, ktorá bude obsahovať len jednotlivé vlastnosti (atribúty) *Pokémon*-a.
+
+Trieda `Pokemon`, ktorá bude reprezentovať náš model, sa nachádza na nasledujúcom **diagrame tried**:
+
 ![Model Pokemon](http://yuml.me/ki/diagram/scruffy/class/%5BPokemon%7Cid:int;name:str;pokedex_number:int;classification:str;type1:str;type2:str%5D-%5E%5BSQLModel%5D)
 
 Model bude mať len základné vlastnosti (zatiaľ):
@@ -501,7 +518,7 @@ def get_pokemon_detail(pokedex_number: int):
 
 ## Krok 7. HTML pohľad pre domovskú stránku pomocou šablónovacieho systému Jinja
 
-![Jinja Logo](https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Jinja_software_logo.svg/1280px-Jinja_software_logo.svg.png)
+![Jinja Logo](resources/images/logo-jinja2.png)
 
 
 **Úloha 7.1** Zmeňte typ dokumentu odpovede pre cestu `/` na HTML.
