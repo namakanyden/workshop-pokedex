@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import uvicorn
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse
@@ -9,9 +11,15 @@ from sqladmin import Admin
 from models import Pokemon, PokemonAdmin
 
 
+path = Path(__file__).parent
+
 app = FastAPI(title="Pokédex")
-app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
+app.mount(
+        "/static",
+        StaticFiles(directory=path / "static"),
+        name="static"
+)
+templates = Jinja2Templates(directory=path / "templates")
 
 # admin view
 engine = create_engine("sqlite:///pokedex.sqlite")

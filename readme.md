@@ -161,7 +161,7 @@ Na karte sa nachádza niekoľko údajov o Pokémonovi Pikachu. Menovať môžeme
 
 Z týchto vlastností uvedených na karte môžeme vytvoriť vlastný model, ktorý bude opisovať ľubovoľného *Pokémon*-a. Model vytvoríme ako **triedu**, ktorá bude obsahovať len jednotlivé vlastnosti (atribúty) *Pokémon*-a.
 
-Trieda `Pokemon`, ktorá bude reprezentovať náš model, sa nachádza na nasledujúcom **diagrame tried**:
+Trieda `Pokemon`, ktorá bude reprezentovať náš model bude potomkom triedy `SQLModel` a jej **diagram tried** sa nachádza na nasledujúcom obrázku:
 
 ![Model Pokemon](http://yuml.me/ki/diagram/scruffy/class/%5BPokemon%7Cid:int;name:str;pokedex_number:int;classification:str;type1:str;type2:str%5D-%5E%5BSQLModel%5D)
 

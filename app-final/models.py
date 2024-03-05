@@ -24,3 +24,4 @@ class PokemonAdmin(ModelView, model=Pokemon):
         Pokemon.type1,
         Pokemon.type2
     ]
+

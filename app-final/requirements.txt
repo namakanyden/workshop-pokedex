@@ -1,9 +1,12 @@
+# core
 pydantic
-ipython
 fastapi
 uvicorn
-litecli
 jinja2
 sqlmodel
 sqladmin
-# httpie
+
+# devel
+httpie
+litecli
+ipython
