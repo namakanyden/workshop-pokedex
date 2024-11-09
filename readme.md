@@ -571,7 +571,7 @@ def get_pokemon_detail(pokedex_number: int):
 
 ## Krok 7. Domovská stránka v HTML pomocou šablónovacieho systému Jinja
 
-V tomto kroku vytvoríme domovskú stránku Pokédexu vo formáte HTML. Pre jej reprezentáciu použijeme šablónovací systém [Jinja].
+Pri prístupe na adresu [http://localhost:8080], ktorá reprezentuje domovskú stránku Pokédexu, dostaneme odpoveď typu JSON. V tomto kroku preto vytvoríme domovskú stránku Pokédexu vo formáte HTML. Pre jej reprezentáciu použijeme šablónovací systém [Jinja].
 
 ![Jinja Logo](resources/images/logo-jinja2.png)
 
@@ -619,9 +619,9 @@ templates = Jinja2Templates(directory="templates")
 ```
 
 
-**Úloha 7.3** Miesto textu `"Hello world!"` vráťte v odpovedi HTML stránku zo šablóny `homepage.tpl.html`.
+**Úloha 7.3** Nahraďte funkciu `hello()` funkciou `homepage()`, ktorá pri prístupe klienta na domovskú stránku Pokédexu vráti v odpovedi HTML stránku zo šablóny `home.tpl.html`.
 
-Funkcii `get_homepage()` pridáme parameter `request`, ktorý je typu `Request`. Ten je potrebný pri skladaní šablóny šablónovacím systémom Jinja.
+Funkcii `homepage()` pridáme parameter `request`, ktorý je typu `Request`. Ten je potrebný pri skladaní šablóny šablónovacím systémom [Jinja].
 
 Funkcia bude tentokrát vracať objekt šablóny, ktorá má dva parametre:
 
@@ -630,11 +630,14 @@ Funkcia bude tentokrát vracať objekt šablóny, ktorá má dva parametre:
    1. `request` - objekt požiadavky `request`, a
    2. `title` - názov webovej stránky
 
+Výsledná funkcia `homepage()` bude vyzerať nasledovne:
+
 ```python
 from fastapi import Request
+from fastapi.responses import HTMLResponse
 
 @app.get("/", response_class=HTMLResponse)
-def hello(request: Request):
+def homepage(request: Request):
     context={
         'request': request,
         'title': 'Vitajte | Pokédex'
@@ -643,9 +646,11 @@ def hello(request: Request):
 ```
 
 
-**Úloha 7.4** Otestujte aktualizovaný pohľad.
+**Úloha 7.4** Otestujte vytvorenú implementáciu.
 
-Ak otvoríte adresu [http://localhost:8080/](http://localhost:8080/) vo webovom prehliadači, zobrazí sa obsah Jinja šablóny pre domovskú, resp. hlavnú stránku.
+Ak ste postupovali správne, po otvorení adresy [`http://localhost:8080/`](http://localhost:8080/) sa vo webovom prehliadači zobrazí domovská stránka v HTML formáte.
+
+![Pokédex: Domovská stránka](resources/images/pokedex-homepage.png)
 
 
 ## Krok 8. Automagická dokumentácia REST API
@@ -761,7 +766,7 @@ def view_list_of_pokemons(request: Request, q: str | None = None):
 * [FastAPI](https://fastapi.tiangolo.com/) - mikro webový rámec jazyka Python
 * [SQLModel](https://sqlmodel.tiangolo.com/) - knižnica pre interakciu s SQL databázami s objektami v jazyku Python
 * [SQLAdmin](https://aminalaee.dev/sqladmin/) - admin rozhranie pre modely napísané pomocou knižnice *SQLModel*
-* [Jinja](https://jinja.palletsprojects.com) - šablónovací systém
+* [Jinja] - šablónovací systém
 * Kaggle: [The Complete Pokemon Dataset](https://www.kaggle.com/datasets/rounakbanik/pokemon) - dataset obsahujúci zoznam všetkých Pokémonov
 * Real Python: [Build a URL Shortener With FastAPI and Python](https://realpython.com/build-a-python-url-shortener-with-fastapi/) - návod, ako vytvoriť skračovať adries v štýle [bit.ly](https://bitly.com) pomocou mikro webového rámca FastAPI
 * Real Python: [Primer on Jinja Templating](https://realpython.com/primer-on-jinja-templating/) - návod, ako pracovať a používať šablónovací systém Jinja (v mikro webovom rámci Flask)
