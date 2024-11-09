@@ -662,36 +662,37 @@ Pre vytvorené REST API rámec FastAPI automaticky generuje dokumentáciu v dvoc
 
 K odkazom na oba typy dokumentácie sa dostanete cez menu na domovskej stránke.
 
-Pre viac možností, ako je napríklad dokumentácia jednotlivých endpointov, sa pozrite na oficiálnu dokumntáciu rámca FastAPI.
+Pre viac možností, ako je napríklad dokumentácia jednotlivých endpointov, sa pozrite na oficiálnu dokumntáciu rámca [FastAPI].
 
 
 ## Krok 9. Pokédex ako HTML stránka
 
 
-**Úloha 9.1** Vytvorte funkciu `view_list_of_pokemons()`, pomocou ktorej zobrazíte webovú stránku Pokédex-u.
+**Úloha 9.1** Vytvorte funkciu `view_list_of_pokemons()`, pomocou ktorej zobrazíte webovú stránku samotného Pokédex-u.
 
-V podstate len zmodifikujeme funkciu `get_pokemon_list()` a zabezpečíme, aby miesto JSON dokumentu vrátila šablónu zo súboru `pokemon-list.tpl.html`. Do objektu kontextu akurát pridáme do kľúča `pokemons` zoznam výsledkov dopytu z databázy.
+V podstate len zmodifikujeme funkciu `get_pokemon_list()` a zabezpečíme, aby miesto JSON dokumentu bola vrátená šablóna zo súboru `pokemon-list.tpl.html`. Do objektu kontextu pridáme do kľúča `pokemons` zoznam výsledkov dopytu z databázy.
 
 ```python
 @app.get('/pokedex', response_class=HTMLResponse)
 def view_list_of_pokemons(request: Request):
-    with Session(engine) as session:
-        statement = select(Pokemon).limit(50)
-        pokemons = session.exec(statement).all()
+    session = Session(engine)
+    statement = select(Pokemon).limit(50)
+    pokemons = session.exec(statement).all()
+    session.close()
 
-        context = {
-            'request': request,
-            'title': 'Všetci Pokémoni na jednom mieste | Pokédex',
-            'pokemons': pokemons
-        }
+    context = {
+        'request': request,
+        'title': 'Všetci Pokémoni na jednom mieste | Pokédex',
+        'pokemons': pokemons
+    }
 
-        return templates.TemplateResponse('pokemon-list.tpl.html', context)
+    return templates.TemplateResponse('pokemon-list.tpl.html', context)
 ```
 
 
-**Úloha 9.2** Overte vytvorenú funkciu.
+**Úloha 9.2** Overte správnosť vašej implementácie.
 
-Ak otvoríte prehliadač na adrese [http://localhost:8080/pokedex](http://localhost:8080/pokedex), zobrazí sa vám _50_ prvých Pokémonov z Pokédexu.
+Ak ste postupovali správne, po otvorení prehliadača na adrese [http://localhost:8080/pokedex](http://localhost:8080/pokedex) sa vám zobrazí _50_ prvých Pokémonov z Pokédexu.
 
 ![Pokémoni v Pokédexe](resources/images/pokedex.jpg)
 
@@ -706,64 +707,76 @@ Opäť pôjde o modifikáciu funkcie `get_pokemon_detail()`, ktorá vráti infor
 ```python
 @app.get("/pokedex/{pokedex_number}", response_class=HTMLResponse)
 def view_detail_of_pokemon(request: Request, pokedex_number: int):
-    with Session(engine) as session:
-        statement = select(Pokemon).where(Pokemon.pokedex_number == pokedex_number)
-        pokemon = session.exec(statement).one_or_none()
-        if pokemon is None:
-            context = {
-                "request": request,
-                "title": "Pokémon sa nenašiel | Pokédex"
-            }
-            return templates.TemplateResponse("404.tpl.html", context)
+    session = Session(engine)
+    statement = select(Pokemon).where(Pokemon.pokedex_number == pokedex_number)
+    pokemon = session.exec(statement).one_or_none()
+    session.close()
 
+    if pokemon is None:
         context = {
             "request": request,
-            "title": f"{pokemon.name} | Pokédex",
-            "pokemon": pokemon,
+            "title": "Pokémon sa nenašiel | Pokédex"
         }
+        return templates.TemplateResponse("404.tpl.html", context)
 
-        return templates.TemplateResponse("pokemon-detail.tpl.html", context)
+    context = {
+        "request": request,
+        "title": f"{pokemon.name} | Pokédex",
+        "pokemon": pokemon,
+    }
+
+    return templates.TemplateResponse("pokemon-detail.tpl.html", context)
 ```
 
 
 **Úloha 10.2** Overte vytvorenú funkciu.
 
-Ak otvoríte prehliadač na adrese [http://localhost:8080/pokedex/25](http://localhost:8080/pokedex/25), zobrazia sa vám informácie o Pokémonovi _Pikatchu_.
+Ak otvoríte prehliadač na adrese [http://localhost:8080/pokedex/25](http://localhost:8080/pokedex/25), zobrazia sa vám informácie o Pokémonovi _Pikatchu_. Rovnako sa vám detail o Pokémonovi zobrazí po kliknutí na ktoréhokoľvek Pokémona v zozname všetkých Pokémonov.
+
 
 ## Krok 10. Vyhľadávač Pokémonov
 
-**Úloha 10.1** Rozšírte pohľad definovaný funkciou `view_list_of_pokemons()` o tzv. _query parameter_ `q`, ktorý pomocou ktorej zobrazíte webovú stránku s detailami o konkrétnom Pokémonovi.
+**Úloha 10.1** Rozšírte funkciu `view_list_of_pokemons()` o tzv. _query parameter_ `query`, pomocou ktorého zobrazíte webovú stránku so zoznamom Pokémonov, ktorých meno obsahuje reťazec tohto parametra.
+
+Upravená funkcia bude vyzerať nasledovne:
 
 ```python
 from sqlmodel import or_
 
 @app.get('/pokedex', response_class=HTMLResponse)
-def view_list_of_pokemons(request: Request, q: str | None = None):
-    with Session(engine) as session:
-        if q is None:
-            statement = select(Pokemon).limit(40)
-        else:
-            statement = (
-                select(Pokemon)
-                .where(or_(Pokemon.name.ilike(f'%{q}%'), Pokemon.id == q))
-                .limit(40)
-            )
-        pokemons = session.exec(statement).all()
+def view_list_of_pokemons(request: Request, query: str | None = None):
+    if query is None:
+        statement = select(Pokemon).limit(40)
+    else:
+        statement = (
+            select(Pokemon)
+            .where(or_(Pokemon.name.ilike(f'%{query}%'), Pokemon.id == q))
+            .limit(40)
+        )
 
-        context = {
-            'request': request,
-            'title': 'Výsledky hľadania | Pokédex',
-            'pokemons': pokemons
-        }
+    session = Session(engine)
+    pokemons = session.exec(statement).all()
+    session.close()
 
-        return templates.TemplateResponse('pokemon-list.tpl.html', context)
+    context = {
+        'request': request,
+        'title': 'Výsledky hľadania | Pokédex',
+        'pokemons': pokemons
+    }
+
+    return templates.TemplateResponse('pokemon-list.tpl.html', context)
 ```
+
+
+**Úloha 10.1** Overte správnosť svojej implementácie.
+
+Ak ste postupovali správne, tak ak do vyhľadávača zadáte napr. `charm`, vo výsledku dostanete dvoch Pokémonov: _Charmandera_ a _Charmeleona_.
 
 
 ## Ďalšie zdroje
 
 * [Pokédex](https://www.pokemon.com/us/pokedex/) - online pomôcka každého správneho lovca Pokémonov
-* [FastAPI](https://fastapi.tiangolo.com/) - mikro webový rámec jazyka Python
+* [FastAPI] - mikro webový rámec jazyka Python
 * [SQLModel](https://sqlmodel.tiangolo.com/) - knižnica pre interakciu s SQL databázami s objektami v jazyku Python
 * [SQLAdmin](https://aminalaee.dev/sqladmin/) - admin rozhranie pre modely napísané pomocou knižnice *SQLModel*
 * [Jinja] - šablónovací systém
@@ -779,3 +792,4 @@ Uvedené dielo podlieha licencii [Creative Commons BY-NC-SA 4.0](https://creativ
 
 
 [Jinja]: https://jinja.palletsprojects.com
+[FastAPI]: https://fastapi.tiangolo.com/
