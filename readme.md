@@ -6,11 +6,11 @@ alebo ako si vytvoriť [Pokédex](https://www.pokemon.com/us/pokedex/) v jazyku 
 
 Pokédex je pomôcka každého správneho trénera Pokémonov. Ak si trénerom Pokémonov, už určite svoj Pokédex máš. To ale nevadí, pretože na tomto workshope si vytvoríš svoj vlastný Pokédex, ktorý môže vyzerať a fungovať ako len chceš.
 
-Pokédex vytvoríme pomocou mladého a stále [populárnejšieho](https://survey.stackoverflow.co/2022/#most-loved-dreaded-and-wanted-webframe-love-dread) mikro webového rámca [FastAPI](https://fastapi.tiangolo.com). Keďže je primárne určený na tvorbu REST API, začneme endpoint-mi na získanie zoznamu všetkých Pokémonov, ale rovnako vytvoríme endpoint na získanie informácií o konkrétnom Pokémonovi na základe jeho čísla v Pokédexe. Ukážeme si však aj to, ako pomocou rámca FastAPI vytvárať dynamické HTML stránky pomocou šablónovacieho systému [Jinja](https://jinja.palletsprojects.com/). A samozrejme - dáta o Pokémonoch sú uložené v SQLite databáze a budeme k nim pristupovať pomocou balíka [SQLModel](https://sqlmodel.tiangolo.com).
+Pokédex vytvoríme pomocou mladého a stále [populárnejšieho](https://survey.stackoverflow.co/2024/technology#2-web-frameworks-and-technologies) mikro webového rámca [FastAPI](https://fastapi.tiangolo.com). Keďže je primárne určený na tvorbu REST API, začneme endpoint-mi na získanie zoznamu všetkých Pokémonov, ale rovnako vytvoríme endpoint na získanie informácií o konkrétnom Pokémonovi na základe jeho čísla v Pokédexe. Ukážeme si však aj to, ako pomocou rámca FastAPI vytvárať dynamické HTML stránky pomocou šablónovacieho systému [Jinja](https://jinja.palletsprojects.com/). A samozrejme - dáta o Pokémonoch sú uložené v SQLite databáze a budeme k nim pristupovať pomocou balíka [SQLModel](https://sqlmodel.tiangolo.com).
 
 **Odporúčaný čas:** 120 až 180 minút
 
-**Upozornenie:** Keďže je tento workshop pomerne krátky, nebudeme v ňom vedieť aplikovať tie najlepšie prístupy pre tvorbu aplikácií pomocou rámca FastAPI.
+**Upozornenie:** Keďže je tento workshop pomerne krátky, nebudeme v ňom aplikovať tie najlepšie prístupy pre tvorbu aplikácií pomocou rámca FastAPI.
 
 ## Ciele
 
@@ -58,15 +58,15 @@ if __name__ == "__main__":
     )
 ```
 
-Pri spúšťaní sme zabezpečili, že:
+Volanie `uvicorn.run()` zabezpečí spustenie webovej aplikácie s týmito vlastnosťami:
 
-* aplikácia bude prístupná na porte `8080`; parameter `port` nie je povinný a ak by sme ho neuviedli, aplikácia sa spustí na porte `8000`
-* aplikácia bude akceptovať spojenia z akejkoľvek IP adresy (parameter `host=0.0.0.0`); parameter `host` nie je povinný a ak by sme ho neuviedli, bude možné k aplikácii pristupovať len z IP adresy `127.0.0.1`
-* v prípade, že urobíme zmenu v ktoromkoľvek súbore, aplikácia sa sama aktualizuje; parameter `reload` nie je povinný a ak by sme ho neuviedli, bude mať nastavenú hodnotu `False`
+* `port=8080` - aplikácia bude prístupná na porte `8080`; parameter nie je povinný a ak by sme ho neuviedli, aplikácia sa spustí na porte `8000`
+* `host="0.0.0.0"` - aplikácia bude akceptovať spojenia z akejkoľvek IP adresy; parameter nie je povinný a ak by sme ho neuviedli, bude možné k aplikácii pristupovať len z IP adresy `127.0.0.1`
+* `reload=True` - v prípade, že urobíme zmenu v ktoromkoľvek súbore, aplikácia sa sama aktualizuje; parameter nie je povinný a ak by sme ho neuviedli, jeho predvolenou hodnotou bude `False`
 
-**Poznámka:** Ak budete pre vývoj používať ľahký editor kódu [Thonny](https://thonny.org), tak **program nevypínajte stlačením červeného tlačidla**! Program totiž zostane bežať na pozadí a pri pokuse o jeho opätovné spustenie dostanete chybovú hlášku o tom, že port je už obsadený. To isté sa stane aj vtedy, ak omylom stlačíte tlačidlo spustiť, keď je program už spustený. Rýchlym riešením v rámci workshop-u je číslo portu zmeniť na iný.
+**Poznámka:** Ak budete pre vývoj používať ľahký editor kódu [Thonny](https://thonny.org), tak **program nevypínajte stlačením červeného tlačidla**! Miesto toho stlačte v termináli klávesovú skratku `CTRL+C`. Program totiž zostane spustený na pozadí a pri pokuse o jeho opätovné spustenie dostanete chybovú hlášku o tom, že port je už obsadený. To isté sa stane aj vtedy, ak omylom stlačíte tlačidlo spustiť, keď je program už spustený. Rýchlym riešením v rámci workshop-u je číslo portu zmeniť na iný.
 
-**Poznámka pre inštruktora:** Pretože čas je najväčší nepriateľ tohto workshopu a ak nepoužívate niektoré z veľkých prostredí, ako napr. [VS Code](https://code.visualstudio.com) alebo [PyCharm](https://www.jetbrains.com/pycharm/), do modulu `main.py` môžete vložiť všetky potrebné importy pre celú aplikáciu už teraz. Toto vám ušetrí čas a nebudete musieť zmätočne behať hore a dolu v kóde vždy, keď začnete používať novú funkciu. Miesto toho môžete akurát upozorniť, z ktorého modulu bola importovaná. Ak však budete pre vývoj používať profesionálne vývojové prostredie, nie je potrebné vymenovať všetky importy dopredu - tieto prostredia budú v pravý čas vedieť správny modul importovať samé.
+**Poznámka pre inštruktora:** Pretože čas je najväčší nepriateľ tohto workshopu a ak nepoužívate niektoré z veľkých prostredí, ako napr. [VS Code](https://code.visualstudio.com) alebo [PyCharm](https://www.jetbrains.com/pycharm/), do modulu `main.py` môžete vložiť všetky potrebné importy pre celú aplikáciu už teraz. Toto vám ušetrí čas a nebudete musieť zmätočne behať hore a dolu v kóde vždy, keď začnete používať novú funkciu. Miesto toho môžete študentov vždy len upozorniť, z ktorého modulu boli importované. Ak však budete pre vývoj používať profesionálne vývojové prostredie, nie je potrebné vymenovať všetky importy dopredu - tieto prostredia budú v pravý čas vedieť správny modul importovať samé.
 
 Zoznam všetkých potrebných systémových importov sa nachádza v tomto fragmente:
 
@@ -83,40 +83,40 @@ from sqladmin import Admin
 Importovať budete len moduly, ktoré budú vytvorené neskôr.
 
 
-**Úloha 2.2** Spustite a overte spustenú aplikáciu.
+**Úloha 2.2** Spustite a overte správanie vytvorenej aplikácie.
 
-Po spustení bude aplikácia dostupná na adrese [http://0.0.0.0:8080](http://0.0.0.0:8080), resp. na adrese [http://localhost:8080](http://localhost:8080), ktorú budeme používať aj my. Ak otvoríme prehliadač na tejto adrese, uvidíme v ňom text:
+Po spustení bude aplikácia dostupná na adrese [`http://0.0.0.0:8080`](http://0.0.0.0:8080), resp. na adrese [`http://localhost:8080`](http://localhost:8080), ktorú budeme používať aj my. Ak otvoríme prehliadač na tejto adrese, uvidíme v ňom text:
 
 ```
 Hello world!
 ```
 
-**Lektor:** Viac nám však povie pohľad na hlavičku HTTP odpovede. Tú si vieme zobraziť napríklad nástrojom [`httpie`](https://httpie.io/) z príkazového riadku spustením príkazu:
+**Lektor:** Viac nám však povie pohľad na hlavičku a telo odpovede. Tie si vieme zobraziť napríklad nástrojom [`httpie`](https://httpie.io/) z príkazového riadku spustením príkazu:
 
 ```bash
 $ http http://localhost:8080
 ```
 
-Výsledkom bude HTTP hlavička odpovede spolu s jej telom:
+Výsledkom bude táto HTTP hlavička spolu s jej telom:
 
 ```http
 HTTP/1.1 200 OK
 content-length: 14
 content-type: application/json
-date: Sat, 03 Sep 2022 20:50:08 GMT
+date: Fri, 08 Nov 2024 23:57:35 GMT
 server: uvicorn
 
 "Hello world!"
 ```
 
-Ako je možné vidieť, typ odpovede (kľúč `content-type` v hlavičke odpovede) je v tomto prípade JSON dokument (hodnota `application/json`) a nie HTML dokument, ako je tomu napríklad v prípade mikro webového rámca [Flask](https://flask.palletsprojects.com/) alebo [Django](https://www.djangoproject.com/). To je dané tým, že rámec FastAPI je primárne určený na tvorbu HTTP REST API.
+Ako je možné vidieť, typ odpovede (kľúč `content-type` v hlavičke) je v tomto prípade JSON dokument (hodnota `application/json`) a nie HTML dokument, ako je tomu napríklad v prípade mikro webového rámca [Flask](https://flask.palletsprojects.com/) alebo [Django](https://www.djangoproject.com/). To je dané tým, že rámec FastAPI je primárne určený na tvorbu HTTP REST API.
 
 A práve vytvorením jednoduchého HTTP REST API budeme pokračovať.
 
 
 ## Krok 3. Modelujeme Pokémona
 
-Naša aplikácia bude pracovať s perzistentnými údajmi. Tie sa nachádzajú uložené v súbore `pokedex.sqlite`. Databáza obsahuje všetkých _801_ aktuálne známych Pokémonov. Zdrojom dát je dataset zverejnený na serveri [Kaggle](https://www.kaggle.com/datasets/rounakbanik/pokemon). Na komunikáciu s databázou SQLite budeme používať rámec [SQLModel](https://sqlmodel.tiangolo.com/).
+Zoznam všetkých Pokémonov je uložený v súbore `pokedex.sqlite`. Databáza obsahuje všetkých _801_ aktuálne známych Pokémonov. Na komunikáciu s databázou SQLite budeme používať rámec [SQLModel](https://sqlmodel.tiangolo.com/).
 
 [![SQLModel Logo](https://sqlmodel.tiangolo.com/img/logo-margin/logo-margin-vector.svg)](https://sqlmodel.tiangolo.com/)
 
@@ -137,6 +137,26 @@ Schému tabuľky si zobrazíme príkazom:
 ```bash
 pokedex.sqlite> .schema pokemon
 ```
+
+Zoznam všetkých Pokémonov je možné získať nasledovným SQL príkazom:
+
+```sql
+pokedex.sqlite> SELECT * FROM pokemon;
+```
+
+Keďže je ale záznamov veľa a každý z nich má veľa atribútov, overíme celkový počet záznamov príkazom:
+
+```sql
+pokedex.sqlite> SELECT COUNT(*) FROM pokemon;
++----------+
+| count(*) |
++----------+
+| 801      |
++----------+
+1 row in set
+Time: 0.004s
+```
+
 
 **Úloha 3.1** V koreňovom priečinku aplikácie vytvorte súbor `models.py`.
 
@@ -165,7 +185,7 @@ Trieda `Pokemon`, ktorá bude reprezentovať náš model bude potomkom triedy `S
 
 ![Model Pokemon](http://yuml.me/ki/diagram/scruffy/class/%5BPokemon%7Cid:int;name:str;pokedex_number:int;classification:str;type1:str;type2:str%5D-%5E%5BSQLModel%5D)
 
-Model bude mať len základné vlastnosti (zatiaľ):
+Model, ktorý bude reprezentovať Pokémona, bude mať (zatiaľ) len základné vlastnosti. Dôležité však je, aby ich meno zodpovedalo názvu príslušnej vlastnosti v databáze. Konkrétne sa bude jednať o tieto vlastnosti:
 
 * `id` - primárny kľúč záznamu
 * `name` - meno Pokémona
@@ -173,6 +193,8 @@ Model bude mať len základné vlastnosti (zatiaľ):
 * `classification` - klasifikácia / zaradenie Pokémona
 * `type1` - typ Pokémona
 * `type2` - typ Pokémona
+
+Následne vytvoríme triedu `Pokemon`, ktorá bude reprezentovať model pre každého Pokémona:
 
 ```python
 from sqlmodel import Field, SQLModel
@@ -187,10 +209,10 @@ class Pokemon(SQLModel, table=True):
     type2: str
 ```
 
-Pri čítaní a zapisovaní do databázy bude automaticky pracovať s tabuľkou s názvom `pokemon`. V prípade, že by sme potrebovali inú tabuľku, môžeme do modelu pridať atribút `__tablename__` s názvom požadovanej tabuľky, napr.:
+**Poznámka:** Názov triedy identifikuje rovno aj názov tabuľky v databáze. To znamená, že každý Pokémon, ktorý bude reprezentovaný pomocou vytvoreného modelu (triedy) `Pokemon` sa bude nachádzať v tabuľke `pokemon`. Ak by sme však potrebovali inú tabuľku, môžeme do modelu pridať atribút `__tablename__` s názvom požadovanej tabuľky, napr.:
 
 ```python
-__tablename__ = "pokemon"
+__tablename__ = "pokemons"
 ```
 
 
@@ -203,41 +225,41 @@ Ak chceme pracovať s údajmi uloženými v databáze, musíme sa k databáze pr
 
 Na začiatok súboru `main.py` vytvoríme premennú `engine`, pomocou ktorej sa budeme vedieť spojiť s databázou.
 
-Do súboru `main.py` Vložíme nasledovný fragment kódu:
+Obsah súboru `main.py` upravíme nasledovne:
 
 ```python
 from sqlmodel import create_engine
 
-# db engine
+app = FastAPI(title="Pokédex")
 engine = create_engine('sqlite:///pokedex.sqlite')
 ```
 
 
 **Úloha 4.2** Vytvorte rozhranie pre administrátora pomocou modulu `sqladmin`.
 
-Admin rozhranie vytvoríme veľmi jednoducho: pod riadok, v ktorom sme vytvorili objek `engine` vytvoríme admin rozhranie riadokm:
+Admin rozhranie vytvoríme veľmi jednoducho: pod riadok, v ktorom sme vytvorili objek `engine` vytvoríme admin rozhranie riadkom:
 
 ```python
 from sqladmin import Admin
 
+app = FastAPI(title="Pokédex")
 engine = create_engine("sqlite:///pokedex.sqlite")
 admin = Admin(app, engine)
 ```
 
 
-**Úloha 4.3** Overte funkčnosť admin rozhrania otvorením adresy [http://localhost:8080/admin/](http://localhost:8080/admin/) v prehliadači.
+**Úloha 4.3** Overte funkčnosť admin rozhrania otvorením adresy [`http://localhost:8080/admin/`](http://localhost:8080/admin/) v prehliadači.
 
 Pokiaľ je všetko v poriadku, v prehliadači sa vám zobrazí prázdna obrazovka admin rozhrania.
 
 ![Prázdne admin rozhranie](resources/images/empty.admin.ui.png)
 
 
+**Úloha 4.4** V súbore `models.py` vytvorte model pre zobrazenie Pokémonov v admin rozhraní.
 
-**Úloha 4.4** Vytvorte model pre zobrazenie Pokémonov v admin rozhraní.
+V admin rozhraní zatiaľ nič nevidíme. Aby sme v ňom mohli vidieť Pokémonov z databázy, musíme pre ne vytvoriť samostatný model. V súbore s modelmi preto vytvoríme nový model, ktorým opíšeme, čo a ako sa má v admin rozhraní zobrazovať.
 
-V admin rozhraní zatiaľ nič nevidíme. Aby sme v ňom mohli vidieť Pokémonov z databázy, musíme pre ne vytvoriť samostatný model. Do súboru s modelmi preto vytvoríme nový model, ktorým opíšeme, čo a ako sa má v admin rozhraní zobrazovať.
-
-Model nazveme `PokemonAdmin`, bude potomkom triedy `ModelView` a bude opisovať admin rozhranie modelu `Pokemon`. Kód bude vyzerať napríklad takto:
+Model nazveme `PokemonAdmin`. Tento model bude potomkom triedy `ModelView` a bude opisovať admin rozhranie modelu `Pokemon`. Kód bude vyzerať napríklad takto:
 
 ```python
 from sqladmin import ModelView
@@ -261,7 +283,7 @@ class PokemonAdmin(ModelView, model=Pokemon):
 
 **Úloha 4.5** Pridajte model `PokemonAdmin` do admin rozhrania.
 
-Aby sme v admin rozhraní videli našich Pokémonov z databázy, musíme náš model `PokemonAdmin` pridať do `admin` objektu. To urobíme v súbore `main.py`:
+Aby sme v admin rozhraní videli našich Pokémonov z databázy, musíme v ňom pre Pokémonov vytvoriť samostatný pohľad. To urobíme volaním metódy `.add_view()` nad objektom admin rozhrania v súbore `main.py` takto:
 
 ```python
 from models import PokemonAdmin
@@ -271,7 +293,7 @@ admin = Admin(app, engine)
 admin.add_view(PokemonAdmin)
 ```
 
-Ak teraz otvoríte prehliadač na adrese [http://localhost:8080/admin/], uvidíte v bočnom stĺpci názov nášho modelu. Ak naň kliknete, uvidíte zoznam všetkých Pokémonov, ktorých máme v databáze.
+Ak teraz otvoríte prehliadač na adrese [`http://localhost:8080/admin/`], uvidíte v bočnom stĺpci názov nášho modelu. Ak naň kliknete, uvidíte zoznam všetkých Pokémonov, ktorých máme v databáze.
 
 ![Admin rozhranie pre Pokémonov](resources/images/pokemon.admin.ui.png)
 
@@ -280,7 +302,11 @@ Ak teraz otvoríte prehliadač na adrese [http://localhost:8080/admin/], uvidít
 
 ## Krok 5. Získanie zoznamu všetkých Pokémonov
 
-V prípade, že klient vytvorí HTTP dopyt na endpoint `/api/pokemons`, v odpovedi dostane zoznam Pokémonov.
+V tomto kroku vytvoríme tzv. endpoint, pomocou ktorého pošleme klientovi zoznam všetkých Pokémonov. Tento endpoint bude dostupný na adrese `/api/pokemons` a zoznam Pokémonov klientovi pošleme vo formáte JSON.
+
+Endpoint reprezentuje časť URL adresy, ktorú voláme cesta (z angl. path). Keď vytvoríme HTTP požiadavku na takúto adresu, v odpovedi dostaneme zodpovedajúce údaje, ktorými bude v našom prípade zoznam všetkých známych Pokémonov. 
+
+![Komponenty URL adresy](resources/images/url.format.explained.png)
 
 
 **Úloha 5.1** Vytvorte funkciu `get_pokemon_list()`, ktorá vráti (zatiaľ) prázdny zoznam Pokémonov.
@@ -707,6 +733,7 @@ def view_list_of_pokemons(request: Request, q: str | None = None):
 * [SQLModel](https://sqlmodel.tiangolo.com/) - knižnica pre interakciu s SQL databázami s objektami v jazyku Python
 * [SQLAdmin](https://aminalaee.dev/sqladmin/) - admin rozhranie pre modely napísané pomocou knižnice *SQLModel*
 * [Jinja](https://jinja.palletsprojects.com) - šablónovací systém
+* Kaggle: [The Complete Pokemon Dataset](https://www.kaggle.com/datasets/rounakbanik/pokemon) - dataset obsahujúci zoznam všetkých Pokémonov
 * Real Python: [Build a URL Shortener With FastAPI and Python](https://realpython.com/build-a-python-url-shortener-with-fastapi/) - návod, ako vytvoriť skračovať adries v štýle [bit.ly](https://bitly.com) pomocou mikro webového rámca FastAPI
 * Real Python: [Primer on Jinja Templating](https://realpython.com/primer-on-jinja-templating/) - návod, ako pracovať a používať šablónovací systém Jinja (v mikro webovom rámci Flask)
 * [Namakané webináre](http://namakanyden.sk/webinare/): Tvorba dynamických webových stránok v jazyku Python, [časť 1](http://namakanyden.sk/webinars/2020.01-fastapi.i.html), [časť 2](http://namakanyden.sk/webinars/2020.02-fastapi.ii.html), [časť 3](http://namakanyden.sk/webinars/2020.03-fastapi.iii.html)
