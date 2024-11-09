@@ -302,20 +302,36 @@ Ak teraz otvoríte prehliadač na adrese [`http://localhost:8080/admin/`], uvid�
 
 ## Krok 5. Získanie zoznamu všetkých Pokémonov
 
-V tomto kroku vytvoríme tzv. endpoint, pomocou ktorého pošleme klientovi zoznam všetkých Pokémonov. Tento endpoint bude dostupný na adrese `/api/pokemons` a zoznam Pokémonov klientovi pošleme vo formáte JSON.
+V tomto kroku vytvoríme tzv. **endpoint**, pomocou ktorého pošleme klientovi zoznam všetkých Pokémonov. Tento endpoint bude dostupný na adrese `/api/pokemons` a zoznam Pokémonov klientovi pošleme vo formáte JSON.
 
 Endpoint reprezentuje časť URL adresy, ktorú voláme cesta (z angl. path). Keď vytvoríme HTTP požiadavku na takúto adresu, v odpovedi dostaneme zodpovedajúce údaje, ktorými bude v našom prípade zoznam všetkých známych Pokémonov. 
 
 ![Komponenty URL adresy](resources/images/url.format.explained.png)
 
+Vo výsledku sa samozrejme zavolá funkcia, ktorá sa nazýva **path operation**. A práve funkciu, ktorá vráti zoznam známych Pokémonov, vytvoríme v tomto kroku.
+
 
 **Úloha 5.1** Vytvorte funkciu `get_pokemon_list()`, ktorá vráti (zatiaľ) prázdny zoznam Pokémonov.
+
+Samotná funkcia bude vyzerať takto:
+
+```python
+def get_pokemon_list():
+    return []
+```
+
+Aby sme z nej však spravili funkciu typu _path operation_, použijeme nad ňou dekorátor `@app.get()` takto:
 
 ```python
 @app.get("/api/pokemons")
 def get_pokemon_list():
     return []
 ```
+
+O tomto dekorátore platí:
+
+* Jeho parametrom je endpoint (resp. cesta). Táto cesta je potrebná preto, aby rámec _FastAPI_ vedel, kedy má túto funkciu spustiť. 
+* Dekorátor `.get()` reprezentuje metódu HTTP protokolu, ktorou je možné k tejto funkcii pristúpiť. Ak klient použije inú HTTP metódu, táto funkcia sa nespustí.
 
 
 **Úloha 5.2** Overte vytvorený endpoint.
@@ -339,7 +355,7 @@ server: uvicorn
 ```
 
 
-**Úloha 5.3** Upravte pohľad pre endpoint `/api/pokemons` tak, aby miesto prázdneho zoznamu vrátil zoznam všetkých Pokémonov, ktorí sa nachádzajú v databáze.
+**Úloha 5.3** Upravte funkciu `get_pokemon_list()` tak, aby miesto prázdneho zoznamu vrátil zoznam všetkých Pokémonov, ktorí sa nachádzajú v databáze.
 
 V jazyku SQL by sme zoznam všetkých Pokémonov získali príkazom
 
@@ -360,7 +376,7 @@ from models import Pokemon
 statement = select(Pokemon)
 ```
 
-Aby sme ho však spojazdnili, potrebujeme otvoriť spojenie s databázou a po vykonaní príkazu ho zasa zatvoriť. Na to vytvoríme objekt typu `Session` a využijeme na to _context provider_. Výsledný pohľad bude vyzerať nasledovne:
+Aby sme ho však spojazdnili, potrebujeme otvoriť spojenie s databázou a po vykonaní príkazu ho zasa zatvoriť. Na tento účel vytvoríme objekt typu `Session`. Výsledný pohľad bude vyzerať nasledovne:
 
 ```python
 @app.get("/api/pokemons")
@@ -374,7 +390,7 @@ def get_pokemon_list():
 
 **Poznámka:** Pracovať s databázou je možné viacerými spôsobmi. To, pre ktorý spôsob sa rozhodnete, závisí od skúseností vašich účastníkov. Pre prácu s objektom typu `Session` môžete použiť napr. tzv. _kontext provider_ alebo použiť _dependency injection_. Detaily použitia nájdete v [dokumentácii knižnice SQLModel](https://sqlmodel.tiangolo.com/).
 
-Nie je však vždy veľmi praktické vracať zoznam úplne všetkých položiek, ktorých môžu byť tisíce až milióny. Zoznam výsledkov obmedzíme na _50_. V podstate urobíme niečo, čo by sme v jazyku SQL zapísali ako:
+Nie je však vždy veľmi praktické vracať zoznam úplne všetkých položiek, ktorých môžu byť v rozličných databázach tisíce až milióny. Zoznam výsledkov preto obmedzíme na _50_. V podstate urobíme niečo, čo by sme v jazyku SQL zapísali ako:
 
 ```sql
 SELECT * FROM pokemon LIMIT 50;
@@ -397,10 +413,10 @@ def get_pokemon_list():
 
 ## Krok 6. Získanie detailu o konkrétnom Pokémonovi
 
-Na získanie detailov o konkrétnom Pokémonovi vytvoríme endpoint s parametrom `/api/pokemons/{pokedex_number}`, ktorý vráti JSON dokument s príslušnými detailami. Za týmto účelom vytvoríme nový pohľad, ktorý bude reprezentovaný novou funkciou.
+Na získanie detailov o konkrétnom Pokémonovi vytvoríme endpoint s parametrom, ktorým bude číslo Pokémona z Pokédexu. Takýto endpoint bude vyzerať takto: `/api/pokemons/{pokedex_number}`. Funkcia, ktorá bude tento endpoint reprezentovať, sa bude volať `get_pokemon_detail()`.
 
 
-**Úloha 6.1** Vytvorte funkciu `get_pokemon_detail()`, ktorá vráti (zatiaľ) prázdny JSON dokument.
+**Úloha 6.1** Vytvorte funkciu `get_pokemon_detail()`, ktorá vráti prázdny slovník.
 
 Funkcia bude mať tieto parametre:
 
@@ -419,6 +435,13 @@ Ak vytvoríme požiadavku s korektnou cestou, v odpovedi dostaneme prázdny JSON
 
 ```bash
 $ http http://localhost:8080/api/pokemons/1
+HTTP/1.1 200 OK
+content-length: 2
+content-type: application/json
+date: Sat, 09 Nov 2024 03:56:32 GMT
+server: uvicorn
+
+{}
 ```
 
 Ak však miesto celočíselného identifikátora použijeme iný údajový typ, dostaneme pekné chybové hlásenie. Ak sa napríklad miesto číselného identifikátora budeme pýtať na reťazec `pikatchu`:
@@ -450,7 +473,7 @@ server: uvicorn
 ```
 
 
-**Úloha 6.3** Upravte pohľad pre endpoint `/api/pokemons/{pokedex_number}` tak, aby miesto prázdneho JSON objektu vrátil  objekt s dátami o príslušnom Pokémonovi.
+**Úloha 6.3** Upravte funkciu `get_pokemon_detail()` tak, aby miesto prázdneho JSON objektu vrátila objekt s dátami o príslušnom Pokémonovi.
 
 V jazyku SQL by sme detaily o Pokémonovi s číslom v Pokédexe _25_ získali príkazom
 
@@ -467,15 +490,16 @@ Tento SQL príkaz prepíšeme do jazyka Python pomocou ORM takto:
 statement = select(Pokemon).where(Pokemon.pokedex_number == pokedex_number)
 ```
 
-Nakoniec už len aktualizujeme pohľad podobne, ako tomu bolo pri získaní zoznamu Pokémonov:
+Nakoniec už len aktualizujeme funkciu podobne, ako tomu bolo pri získaní zoznamu Pokémonov:
 
 ```python
 @app.get("/api/pokemons/{pokedex_number}")
 def get_pokemon_detail(pokedex_number: int):
-    with Session(engine) as session:
-        statement = select(Pokemon).where(Pokemon.pokedex_number == pokedex_number)
-        pokemon = session.exec(statement).one()
-        return pokemon
+    session = Session(engine)
+    statement = select(Pokemon).where(Pokemon.pokedex_number == pokedex_number)
+    pokemon = session.exec(statement).one()
+    session.close()
+    return pokemon
 ```
 
 
@@ -531,18 +555,23 @@ Riešiť tento problém môžeme v princípe dvoma spôsobmi:
 V prípade druhého spôsobu bude upravený pohľad vyzerať takto:
 
 ```python
+from fastapi import HTTPException
+
 @app.get("/api/pokemons/{pokedex_number}")
 def get_pokemon_detail(pokedex_number: int):
-    with Session(engine) as session:
-        statement = select(Pokemon).where(Pokemon.pokedex_number == pokedex_number)
-        pokemon = session.exec(statement).one_or_none()
-        if pokemon is None:
-            raise HTTPException(status_code=404, detail="Pokemon not found.")
-        return pokemon
+    session = Session(engine)
+    statement = select(Pokemon).where(Pokemon.pokedex_number == pokedex_number)
+    pokemon = session.exec(statement).one_or_none()
+    session.close()
+    if pokemon is None:
+        raise HTTPException(status_code=404, detail="Pokemon not found.")
+    return pokemon
 ```
 
 
-## Krok 7. HTML pohľad pre domovskú stránku pomocou šablónovacieho systému Jinja
+## Krok 7. Domovská stránka v HTML pomocou šablónovacieho systému Jinja
+
+V tomto kroku vytvoríme domovskú stránku Pokédexu vo formáte HTML. Pre jej reprezentáciu použijeme šablónovací systém [Jinja].
 
 ![Jinja Logo](resources/images/logo-jinja2.png)
 
@@ -623,8 +652,8 @@ Ak otvoríte adresu [http://localhost:8080/](http://localhost:8080/) vo webovom 
 
 Pre vytvorené REST API rámec FastAPI automaticky generuje dokumentáciu v dvoch formátoch:
 
-1. [Redoc](https://redocly.com/redoc/) - dostupný na adrese [http://localhost:8080/redoc](http://localhost:8080/redoc)
-2. [OpenAPI/Swagger](https://swagger.io/) - dostupný na adrese [http://localhost:8080/docs](http://localhost:8080/docs)
+1. [Redoc](https://redocly.com/redoc/) - dostupný na adrese [`http://localhost:8080/redoc`](http://localhost:8080/redoc)
+2. [OpenAPI/Swagger](https://swagger.io/) - dostupný na adrese [`http://localhost:8080/docs`](http://localhost:8080/docs)
 
 K odkazom na oba typy dokumentácie sa dostanete cez menu na domovskej stránke.
 
@@ -742,3 +771,6 @@ def view_list_of_pokemons(request: Request, q: str | None = None):
 ## Licencia
 
 Uvedené dielo podlieha licencii [Creative Commons BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.cs).
+
+
+[Jinja]: https://jinja.palletsprojects.com
