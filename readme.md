@@ -615,7 +615,7 @@ from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
+jinja = Jinja2Templates(directory="templates")
 ```
 
 
@@ -642,7 +642,7 @@ def homepage(request: Request):
         'request': request,
         'title': 'Vitajte | Pokédex'
     }
-    return templates.TemplateResponse('home.tpl.html', context)
+    return jinja.TemplateResponse('home.tpl.html', context)
 ```
 
 
@@ -686,7 +686,7 @@ def view_list_of_pokemons(request: Request):
         'pokemons': pokemons
     }
 
-    return templates.TemplateResponse('pokemon-list.tpl.html', context)
+    return jinja.TemplateResponse('pokemon-list.tpl.html', context)
 ```
 
 
@@ -717,7 +717,7 @@ def view_detail_of_pokemon(request: Request, pokedex_number: int):
             "request": request,
             "title": "Pokémon sa nenašiel | Pokédex"
         }
-        return templates.TemplateResponse("404.tpl.html", context)
+        return jinja.TemplateResponse("404.tpl.html", context)
 
     context = {
         "request": request,
@@ -725,7 +725,7 @@ def view_detail_of_pokemon(request: Request, pokedex_number: int):
         "pokemon": pokemon,
     }
 
-    return templates.TemplateResponse("pokemon-detail.tpl.html", context)
+    return jinja.TemplateResponse("pokemon-detail.tpl.html", context)
 ```
 
 
@@ -764,7 +764,7 @@ def view_list_of_pokemons(request: Request, query: str | None = None):
         'pokemons': pokemons
     }
 
-    return templates.TemplateResponse('pokemon-list.tpl.html', context)
+    return jinja.TemplateResponse('pokemon-list.tpl.html', context)
 ```
 
 
