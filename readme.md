@@ -304,7 +304,7 @@ Ak teraz otvoríte prehliadač na adrese [`http://localhost:8080/admin/`], uvid�
 
 V tomto kroku vytvoríme tzv. **endpoint**, pomocou ktorého pošleme klientovi zoznam všetkých Pokémonov. Tento endpoint bude dostupný na adrese `/api/pokemons` a zoznam Pokémonov klientovi pošleme vo formáte JSON.
 
-Endpoint reprezentuje časť URL adresy, ktorú voláme cesta (z angl. path). Keď vytvoríme HTTP požiadavku na takúto adresu, v odpovedi dostaneme zodpovedajúce údaje, ktorými bude v našom prípade zoznam všetkých známych Pokémonov. 
+Endpoint reprezentuje časť URL adresy, ktorú voláme cesta (z angl. path). Keď vytvoríme HTTP požiadavku na takúto adresu, v odpovedi dostaneme zodpovedajúce údaje, ktorými bude v našom prípade zoznam všetkých známych Pokémonov.
 
 ![Komponenty URL adresy](resources/images/url.format.explained.png)
 
@@ -330,7 +330,7 @@ def get_pokemon_list():
 
 O tomto dekorátore platí:
 
-* Jeho parametrom je endpoint (resp. cesta). Táto cesta je potrebná preto, aby rámec _FastAPI_ vedel, kedy má túto funkciu spustiť. 
+* Jeho parametrom je endpoint (resp. cesta). Táto cesta je potrebná preto, aby rámec _FastAPI_ vedel, kedy má túto funkciu spustiť.
 * Dekorátor `.get()` reprezentuje metódu HTTP protokolu, ktorou je možné k tejto funkcii pristúpiť. Ak klient použije inú HTTP metódu, táto funkcia sa nespustí.
 
 
@@ -452,21 +452,22 @@ $ http http://localhost:8080/api/pokemons/pikatchu
 Výsledkom bude chyba:
 
 ```http
-HTTP/1.1 422 Unprocessable Entity
-content-length: 111
+HTTP/1.1 422 Unprocessable Content
+content-length: 164
 content-type: application/json
-date: Sun, 04 Sep 2022 00:39:50 GMT
+date: Wed, 02 Jul 2025 12:51:51 GMT
 server: uvicorn
 
 {
     "detail": [
         {
+            "input": "pikatchu",
             "loc": [
                 "path",
                 "pokedex_number"
             ],
-            "msg": "value is not a valid integer",
-            "type": "type_error.integer"
+            "msg": "Input should be a valid integer, unable to parse string as an integer",
+            "type": "int_parsing"
         }
     ]
 }
@@ -733,6 +734,8 @@ def view_detail_of_pokemon(request: Request, pokedex_number: int):
 
 Ak otvoríte prehliadač na adrese [http://localhost:8080/pokedex/25](http://localhost:8080/pokedex/25), zobrazia sa vám informácie o Pokémonovi _Pikatchu_. Rovnako sa vám detail o Pokémonovi zobrazí po kliknutí na ktoréhokoľvek Pokémona v zozname všetkých Pokémonov.
 
+**Upozornenie:** Nezobrazia sa však všetky položky, ktoré šablóna vyžaduje. Ak chceme, aby sa zobrazili, potrebujeme rozšíriť model _Pokémona_ o chýbajúce položky.
+
 
 ## Krok 10. Vyhľadávač Pokémonov
 
@@ -750,7 +753,7 @@ def view_list_of_pokemons(request: Request, query: str | None = None):
     else:
         statement = (
             select(Pokemon)
-            .where(or_(Pokemon.name.ilike(f'%{query}%'), Pokemon.id == q))
+            .where(or_(Pokemon.name.ilike(f'%{query}%'), Pokemon.id == query))
             .limit(40)
         )
 

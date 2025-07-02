@@ -35,7 +35,7 @@ Samozrejme si však oba balíčky môžete nainštalovať aj ručne:
 Jazyk Python sa už nachádza v OS Linux predinštalovaný. Overte si len to, či máte vhodnú verziu príkazom:
 
 ```bash
-$ python --version
+$ python3 --version
 ```
 
 Vývojové prostredie [Visual Studio Code] môžete do svojej distribúcie nainštalovať aj pomocou balíčkov. Túto možnosť si ale overte vo svojej vlastnej distribúcii. V opačnom prípade na inštaláciu použite balíčky z domovskej stránky projektu.
@@ -65,7 +65,7 @@ Následne vyhľadajte a nainštalujte tieto rozšírenia:
 4. V príkazovom riadku zadajte nasledujúci príkaz:
 
    ```bash
-   $ python -m venv venv
+   $ python3 -m venv venv
    ```
 
    Výsledkom príkazu bude, že v projekte sa vám vytvorí nový priečinok s názvom `venv/`. Okrem toho v pravom dolnom rohu sa zobrazí okno s informáciou, že VS Code zistilo, že sme vytvorili nové virtuálne prostredie a či ho chceme aktivovať. Potvrdíme, že áno.
@@ -87,7 +87,7 @@ Následne vyhľadajte a nainštalujte tieto rozšírenia:
 7. Úspešnosť inštalácie overíme spustením demo aplikácie. Do príkazového riadku stačí napísať príkaz:
 
    ```bash
-   (venv) $ python main.py
+   (venv) $ python3 main.py
    ```
 
    Ak ste postupovali správne, v termináli sa vám zobrazí, že aplikácia počúva na porte `8000` (http://0.0.0.0:8000). Spustite prehliadač na adrese http://localhost:8000. Ak je všetko v poriadku, v prehliadači uvidíte reťazec:
@@ -99,3 +99,4 @@ Následne vyhľadajte a nainštalujte tieto rozšírenia:
 
 [Chocolatey]: https://chocolatey.org/
 [Visual Studio Code]: https://code.visualstudio.com/
+
