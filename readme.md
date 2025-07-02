@@ -614,7 +614,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
-app = FastAPI()
+app = FastAPI(title="Pokédex")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 jinja = Jinja2Templates(directory="templates")
 ```
